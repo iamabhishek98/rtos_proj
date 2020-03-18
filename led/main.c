@@ -29,7 +29,7 @@ void initLED(void) {
 	/* enable clock for port C & D */ 
 	SIM->SCGC5 |=  SIM_SCGC5_PORTC_MASK | SIM_SCGC5_PORTD_MASK; 
 	
-	/* Select GPIO and enable pull-up resistors and interrupts on falling edges for pin connected to switch */ 
+	/* Select GPIO and enable pull-up resistors*/ 
 	PORTC->PCR[GREEN_LED_1] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
 	PORTC->PCR[GREEN_LED_2] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
 	PORTC->PCR[GREEN_LED_3] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
@@ -56,10 +56,7 @@ void initLED(void) {
 }
 
 void delay(long long mil) {
-	int count = 0xF000;
-	for (long long i = mil; i > 0; i--) {
-		count++;
-	}
+	for (long long i = mil; i > 0; i--) {}
 }
 
 void led_green_thread (void *argument) {
