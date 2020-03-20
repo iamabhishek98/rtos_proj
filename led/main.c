@@ -8,16 +8,16 @@
 
 #include "MKL25Z4.h"
 
-#define GREEN_LED_1 7
-#define GREEN_LED_2 0 
-#define GREEN_LED_3 3
-#define GREEN_LED_4 4
-#define GREEN_LED_5 5
-#define GREEN_LED_6 6
-#define GREEN_LED_7 10
-#define GREEN_LED_8 11
+#define GREEN_LED_1 7 // PTC7
+#define GREEN_LED_2 0 // PTC0
+#define GREEN_LED_3 3 // PTC3
+#define GREEN_LED_4 4 // PTC4
+#define GREEN_LED_5 5 // PTC5
+#define GREEN_LED_6 6 // PTC6
+#define GREEN_LED_7 10 // PTC10
+#define GREEN_LED_8 11 // PTC11
 
-#define RED_LED 6
+#define RED_LED 6 // PTD6
 
 #define MASK(x) (1 << (x)) 
 #define del 0x40000
@@ -66,12 +66,12 @@ void led_green_thread (void *argument) {
 		PTC->PDOR |= MASK(GREEN_LED_1);		
 		osDelay(osDel);
 		//delay(del);
-		PTC->PDOR &= ~MASK(GREEN_LED_1);
+		//PTC->PDOR &= ~MASK(GREEN_LED_1);
 		
 		PTC->PDOR |= MASK(GREEN_LED_2);		
 		osDelay(osDel);
 		//delay(del);
-		PTC->PDOR &= ~MASK(GREEN_LED_2);
+		//PTC->PDOR &= ~MASK(GREEN_LED_2);
 		
 		PTC->PDOR |= MASK(GREEN_LED_3);		
 		osDelay(osDel);
