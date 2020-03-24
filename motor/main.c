@@ -7,15 +7,15 @@
 #include "cmsis_os2.h"
 #include<MKL25Z4.h>
 
-#define MOTOR_PWM_1 29 // PTE29 TPM0_CH2
-#define MOTOR_PWM_2 23 // PTE23 TPM2_CH0
-#define MOTOR_PWM_3 22 // PTE22 TPM2_CH1
-#define MOTOR_PWM_4 20 // PTE20 TPM1_CH0
+#define MOTOR_PWM_1 20 // PTE20 TPM1_CH0
+#define MOTOR_PWM_2 23 // PTE23 TPM2_CH1
+#define MOTOR_PWM_3 22 // PTE22 TPM2_CH0
+#define MOTOR_PWM_4 29 // PTE29 TPM0_CH2
 
-#define MOTOR_DIR_1 1 // PTC1
+#define MOTOR_DIR_1 2 // PTB2
 #define MOTOR_DIR_2 2 // PTC2
-#define MOTOR_DIR_3 3  // PTB3
-#define MOTOR_DIR_4 2 // PTB2
+#define MOTOR_DIR_3 3 // PTB3
+#define MOTOR_DIR_4 1 // PTC1
 
 #define TIMER_CLCK_FREQ 375000 
 #define MASK(x) (1 << (x)) 
@@ -77,21 +77,22 @@ void initGPIO(void) {
 	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK | SIM_SCGC5_PORTC_MASK; 
 	
 	/* Select GPIO and enable pull-up resistors*/ 
-	PORTC->PCR[MOTOR_DIR_1] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTB->PCR[MOTOR_DIR_1] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
 	PORTC->PCR[MOTOR_DIR_2] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
 	PORTB->PCR[MOTOR_DIR_3] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	PORTB->PCR[MOTOR_DIR_4] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTC->PCR[MOTOR_DIR_4] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
 	
 	/* Set port C & D switch bit to outputs */	
-	PTC->PDDR |= MASK(MOTOR_DIR_1);
+	PTB->PDDR |= MASK(MOTOR_DIR_1);
 	PTC->PDDR |= MASK(MOTOR_DIR_2);
 	PTB->PDDR |= MASK(MOTOR_DIR_3);
-	PTB->PDDR |= MASK(MOTOR_DIR_4);
+	PTC->PDDR |= MASK(MOTOR_DIR_4);
 
 	// active low 
 	
 	// set everything to 0
-	//PTC->PDOR |= MASK(MOTOR_DIR_1);		
+	//PTC->PDOR |= MASK(MOTOR_DIR_1);
+  /*	
 	PTC->PDOR &= ~MASK(MOTOR_DIR_1);
 
 	PTC->PDOR |= MASK(MOTOR_DIR_2);		
@@ -100,7 +101,7 @@ void initGPIO(void) {
 	PTB->PDOR &= ~MASK(MOTOR_DIR_3);
 	
 	PTB->PDOR |= MASK(MOTOR_DIR_4);		
-		
+	*/	
 }
 
 void setFrequency(int PWM_module, int PWM_channel, float duty_cycle){
@@ -122,19 +123,124 @@ void setFrequency(int PWM_module, int PWM_channel, float duty_cycle){
 	}
 }
 
+void move_motor(int motor_num, float speed) {
+	
+	int dir = 0;
+	// DIR = 1 reverse, 0 forward.
+	if (speed < 0) {
+		dir = 1;
+		speed = 1 + speed;
+	}
+	
+	int pwm_module = -1, channel_num = -1;
+	if (motor_num == 1) {
+		pwm_module = 1;
+		channel_num = 0;
+		if (dir) PTB->PDOR |= MASK(MOTOR_DIR_1);
+		else PTB->PDOR &= ~MASK(MOTOR_DIR_1);
+	}
+	else if (motor_num == 2) {
+		pwm_module = 2;
+		channel_num = 1;
+		if (dir) PTC->PDOR |= MASK(MOTOR_DIR_2);
+		else PTC->PDOR &= ~MASK(MOTOR_DIR_2);
+	}
+	else if (motor_num == 3) {
+		pwm_module = 2;
+		channel_num = 0;
+		if (dir) PTB->PDOR |= MASK(MOTOR_DIR_3);
+		else PTB->PDOR &= ~MASK(MOTOR_DIR_3);
+	}
+	else if (motor_num == 4) {
+		pwm_module = 0;
+		channel_num = 2;
+		if (dir) PTC->PDOR |= MASK(MOTOR_DIR_4);
+		else PTC->PDOR &= ~MASK(MOTOR_DIR_4);
+	}
+
+	setFrequency(pwm_module, channel_num, speed);	
+	
+}
+
+void move_foward (float speed, int duration) {
+	move_motor(1, speed);
+	move_motor(2, speed);
+	move_motor(3, speed);
+	move_motor(4, speed);
+	osDelay(duration);
+	move_motor(1, 0);
+	move_motor(2, 0);
+	move_motor(3, 0);
+	move_motor(4, 0);
+}
+
+void move_backward (float speed, int duration) {
+	move_motor(1, -1*speed);
+	move_motor(2, -1*speed);
+	move_motor(3, -1*speed);
+	move_motor(4, -1*speed);
+	osDelay(duration);
+	move_motor(1, 0);
+	move_motor(2, 0);
+	move_motor(3, 0);
+	move_motor(4, 0);
+}
+
+void move_left (float speed, int duration) {
+	move_motor(1, -1*speed);
+	move_motor(2, speed);
+	move_motor(3, -1*speed);
+	move_motor(4, speed);
+	osDelay(duration);
+	move_motor(1, 0);
+	move_motor(2, 0);
+	move_motor(3, 0);
+	move_motor(4, 0);
+}
+
+void move_right (float speed, int duration) {
+	move_motor(1, speed);
+	move_motor(2, -1*speed);
+	move_motor(3, speed);
+	move_motor(4, -1*speed);
+	osDelay(duration);
+	move_motor(1, 0);
+	move_motor(2, 0);
+	move_motor(3, 0);
+	move_motor(4, 0);
+}
+
+void curl_right (float speed, int duration) {
+	move_motor(1, speed);
+	move_motor(2, speed/2);
+	move_motor(3, speed);
+	move_motor(4, speed/2);
+	osDelay(duration);
+	move_motor(1, 0);
+	move_motor(2, 0);
+	move_motor(3, 0);
+	move_motor(4, 0);
+}
+
+void curl_left (float speed, int duration) {
+	move_motor(1, speed/2);
+	move_motor(2, speed);
+	move_motor(3, speed/2);
+	move_motor(4, speed);
+	osDelay(duration);
+	move_motor(1, 0);
+	move_motor(2, 0);
+	move_motor(3, 0);
+	move_motor(4, 0);
+}
+
 void motor_thread (void *argument) {
 	
 	// ...
   for (;;) {
-		
-		setFrequency(0, 2, 0.3);
-		//osDelay(osDel);
-		setFrequency(2, 0, 0.3);
-		//osDelay(osDel);
-		setFrequency(2, 1, 0.3);
-		//osDelay(osDel);
-		setFrequency(1, 0, 0.3);
-		//osDelay(osDel);
+		curl_right(0.7, 3000);
+		osDelay(1000);
+
 	}
 }
 
