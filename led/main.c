@@ -159,6 +159,7 @@ void led_red_thread (void *argument) {
 	// ...
   for (;;) {
 		led_red_blink();
+		osDelay(osDel);
 	}
 }
 

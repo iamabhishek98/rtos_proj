@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\Blinky.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Blinky.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Mar 24 14:44:57 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Mar 25 19:19:29 2020
 <BR><P>
 <H3>Maximum Stack Usage =        120 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -590,9 +590,9 @@ Global Symbols
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osRtxThreadDispatch
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osRtxThreadReadyPut
 </UL>
-<BR>[Called By]<UL><LI><a href="#[38]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osRtxThreadPostProcess
-<LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osRtxMutexOwnerRelease
+<BR>[Called By]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osRtxMutexOwnerRelease
 <LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcRtxThreadExit
+<LI><a href="#[38]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osRtxThreadPostProcess
 <LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcRtxMessageQueuePut
 <LI><a href="#[2d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcRtxMessageQueueGet
 <LI><a href="#[36]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osRtxMessageQueuePostProcess
@@ -653,8 +653,8 @@ Global Symbols
 
 <P><STRONG><a name="[8c]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
 
-<P><STRONG><a name="[39]"></a>buzzer_thread</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, main.o(i.buzzer_thread))
-<BR><BR>[Stack]<UL><LI>Max Depth = 44<LI>Call Chain = buzzer_thread &rArr; setFrequency &rArr; __aeabi_idivmod &rArr; __aeabi_uidivmod
+<P><STRONG><a name="[39]"></a>buzzer_thread</STRONG> (Thumb, 66 bytes, Stack size 8 bytes, main.o(i.buzzer_thread))
+<BR><BR>[Stack]<UL><LI>Max Depth = 52<LI>Call Chain = buzzer_thread &rArr; setFrequency &rArr; __aeabi_idivmod &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 <LI><a href="#[44]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2f
