@@ -379,7 +379,7 @@ void move_motor(int motor_num, float speed) {
 
 // Movement Functions for Motor :
 
-void move_foward (float speed, int duration) {
+void move_forward (float speed, int duration) {
 	move_motor(1, speed);
 	move_motor(2, speed);
 	move_motor(3, speed);
@@ -593,8 +593,7 @@ void initUART2(uint32_t baud_rate) {
     UART2->C1 = 0;
     UART2->S2 = 0;
     UART2->C3 = 0;
- 
-    //UART2->C2 |= ((UART_C2_TE_MASK) | (UART_C2_RE_MASK));
+		
     UART2->C2 |= ((UART_C2_TE_MASK) | (UART_C2_RE_MASK) | UART_C2_RIE_MASK);
     Q_Init(&RxQ);
 }
@@ -688,45 +687,36 @@ void led_green_thread (void *argument) {
 			
 		} else {
 			// light up in sequence while it is moving
-			
 			PTC->PDOR |= MASK(GREEN_LED_1);		
 			osDelay(osDel);
-			//delay(del_global);
 			PTC->PDOR &= ~MASK(GREEN_LED_1);
 			
 			PTC->PDOR |= MASK(GREEN_LED_2);		
 			osDelay(osDel);
-			//delay(del_global);
 			PTC->PDOR &= ~MASK(GREEN_LED_2);
 			
 			PTC->PDOR |= MASK(GREEN_LED_3);		
 			osDelay(osDel);
-			//delay(del_global);
 			PTC->PDOR &= ~MASK(GREEN_LED_3);
 			
 			PTC->PDOR |= MASK(GREEN_LED_4);		
 			osDelay(osDel);
-			//delay(del_global);
 			PTC->PDOR &= ~MASK(GREEN_LED_4);
 			
 			PTC->PDOR |= MASK(GREEN_LED_5);		
 			osDelay(osDel);
-			//delay(del_global);
 			PTC->PDOR &= ~MASK(GREEN_LED_5);
 			
 			PTC->PDOR |= MASK(GREEN_LED_6);		
 			osDelay(osDel);
-			//delay(del_global);
 			PTC->PDOR &= ~MASK(GREEN_LED_6);
 			
 			PTC->PDOR |= MASK(GREEN_LED_7);		
 			osDelay(osDel);
-			//delay(del_global);
 			PTC->PDOR &= ~MASK(GREEN_LED_7);
 			
 			PTC->PDOR |= MASK(GREEN_LED_8);		
 			osDelay(osDel);
-			//delay(del_global);
 			PTC->PDOR &= ~MASK(GREEN_LED_8);
 		}
 	}
@@ -736,23 +726,18 @@ void led_green_thread (void *argument) {
 
 void led_red_thread (void *argument) {
 	myDataPkt myRxData;
-	// ...
   for (;;) {
 		osMessageQueueGet(redMsg, &myRxData, NULL, osWaitForever);
 		if(myRxData.cmd ==0x00 || myRxData.cmd == 0x07 || myRxData.cmd == 0x08) {
 		PTD->PDOR |= MASK(RED_LED);		
 		osDelay(250);
-		//delay(del_global);
 		PTD->PDOR &= ~MASK(RED_LED);
 		osDelay(250);
-		//delay(del_global);
 		} else {
 		PTD->PDOR |= MASK(RED_LED);		
 		osDelay(500);
-		//delay(del_global);
 		PTD->PDOR &= ~MASK(RED_LED);
 		osDelay(500);
-		//delay(del_global);
 		}
 	}
 }
@@ -777,11 +762,10 @@ void tBrain (void *argument) {
 	
 	myDataPkt myData;
   for (;;) {
-		uint8_t data;
+		// uint8_t data;
 		// If there is a command which comes in then you have to execute it 
 		if(!Q_Empty(&RxQ)) {
-        data = Q_Dequeue(&RxQ);
-				myData.cmd = data;
+				myData.cmd = Q_Dequeue(&RxQ);
     } else {
 				// Once the command is executed or if no command u go back into the waiting state
 				myData.cmd = 0x08;
@@ -800,23 +784,23 @@ void tMotorControl (void *argument) {
 	myDataPkt myRxData;
   for (;;) {
 		osMessageQueueGet(motorMsg, &myRxData, NULL, osWaitForever);
-		if(myRxData.cmd == 0x00 || myRxData.cmd == 0x08 || myRxData.cmd == 0x07){
-			//No moving when in wait state, connection state or victory tune state
-		} else if (myRxData.cmd == 0x01){
-			//Forward
-		} else if (myRxData.cmd == 0x02){
-			//Left
-		} else if (myRxData.cmd == 0x03){
-			//Right
-		} else if (myRxData.cmd == 0x04){
-			//Back
-		} else if (myRxData.cmd == 0x05){
-			//CL
-		} else if (myRxData.cmd == 0x06){
-			//CR
+		 if (myRxData.cmd == 0x01){//Forward
+			move_forward(0.5, 1000);
+		} else if (myRxData.cmd == 0x02){//Left
+			move_left(0.5, 1000);
+		} else if (myRxData.cmd == 0x03){//Right
+			move_right(0.5, 1000);
+		} else if (myRxData.cmd == 0x04){//Back
+			move_backward(0.5, 1000);
+		} else if (myRxData.cmd == 0x05){//CL
+			curl_left(0.5, 1000);
+		} else if (myRxData.cmd == 0x06){//CR
+			curl_right(0.5, 1000);
 		} else {
-			//Error
+			// No moving when in wait state, connection state or victory tune state
+			// myRxData.cmd == 0x00 || myRxData.cmd == 0x08 || myRxData.cmd == 0x07
 		}
+		// This osdelay may or my not be needed 
 		osDelay(osDel);
 	}
 }
