@@ -59,62 +59,106 @@ void delay(long long mil) {
 	for (long long i = mil; i > 0; i--) {}
 }
 
+void led_green_running () {
+	PTC->PDOR |= MASK(GREEN_LED_1);		
+	osDelay(osDel);
+	//delay(del);
+	PTC->PDOR &= ~MASK(GREEN_LED_1);
+	
+	PTC->PDOR |= MASK(GREEN_LED_2);		
+	osDelay(osDel);
+	//delay(del);
+	PTC->PDOR &= ~MASK(GREEN_LED_2);
+	
+	PTC->PDOR |= MASK(GREEN_LED_3);		
+	osDelay(osDel);
+	//delay(del);
+	PTC->PDOR &= ~MASK(GREEN_LED_3);
+	
+	PTC->PDOR |= MASK(GREEN_LED_4);		
+	osDelay(osDel);
+	//delay(del);
+	PTC->PDOR &= ~MASK(GREEN_LED_4);
+	
+	PTC->PDOR |= MASK(GREEN_LED_5);		
+	osDelay(osDel);
+	//delay(del);
+	PTC->PDOR &= ~MASK(GREEN_LED_5);
+	
+	PTC->PDOR |= MASK(GREEN_LED_6);		
+	osDelay(osDel);
+	//delay(del);
+	PTC->PDOR &= ~MASK(GREEN_LED_6);
+	
+	PTC->PDOR |= MASK(GREEN_LED_7);		
+	osDelay(osDel);
+	//delay(del);
+	PTC->PDOR &= ~MASK(GREEN_LED_7);
+	
+	PTC->PDOR |= MASK(GREEN_LED_8);		
+	osDelay(osDel);
+	//delay(del);
+	PTC->PDOR &= ~MASK(GREEN_LED_8);
+}
+
+void led_green_on () {
+	PTC->PDOR |= MASK(GREEN_LED_1);		
+	PTC->PDOR |= MASK(GREEN_LED_2);		
+	PTC->PDOR |= MASK(GREEN_LED_3);		
+	PTC->PDOR |= MASK(GREEN_LED_4);		
+	PTC->PDOR |= MASK(GREEN_LED_5);		
+	PTC->PDOR |= MASK(GREEN_LED_6);		
+	PTC->PDOR |= MASK(GREEN_LED_7);		
+	PTC->PDOR |= MASK(GREEN_LED_8);	
+}
+
+void led_green_off () {
+	PTC->PDOR &= ~MASK(GREEN_LED_1);
+	PTC->PDOR &= ~MASK(GREEN_LED_2);
+	PTC->PDOR &= ~MASK(GREEN_LED_3);
+	PTC->PDOR &= ~MASK(GREEN_LED_4);
+	PTC->PDOR &= ~MASK(GREEN_LED_5);
+	PTC->PDOR &= ~MASK(GREEN_LED_6);
+	PTC->PDOR &= ~MASK(GREEN_LED_7);
+	PTC->PDOR &= ~MASK(GREEN_LED_8);
+}
+
+void led_green_blink() {
+	led_green_on();
+	osDelay(osDel);
+	led_green_off();
+}
+
 void led_green_thread (void *argument) {
 	
 	// ...
   for (;;) {
-		PTC->PDOR |= MASK(GREEN_LED_1);		
+		led_green_running();
 		osDelay(osDel);
-		//delay(del);
-		//PTC->PDOR &= ~MASK(GREEN_LED_1);
-		
-		PTC->PDOR |= MASK(GREEN_LED_2);		
-		osDelay(osDel);
-		//delay(del);
-		//PTC->PDOR &= ~MASK(GREEN_LED_2);
-		
-		PTC->PDOR |= MASK(GREEN_LED_3);		
-		osDelay(osDel);
-		//delay(del);
-		PTC->PDOR &= ~MASK(GREEN_LED_3);
-		
-		PTC->PDOR |= MASK(GREEN_LED_4);		
-		osDelay(osDel);
-		//delay(del);
-		PTC->PDOR &= ~MASK(GREEN_LED_4);
-		
-		PTC->PDOR |= MASK(GREEN_LED_5);		
-		osDelay(osDel);
-		//delay(del);
-		PTC->PDOR &= ~MASK(GREEN_LED_5);
-		
-		PTC->PDOR |= MASK(GREEN_LED_6);		
-		osDelay(osDel);
-		//delay(del);
-		PTC->PDOR &= ~MASK(GREEN_LED_6);
-		
-		PTC->PDOR |= MASK(GREEN_LED_7);		
-		osDelay(osDel);
-		//delay(del);
-		PTC->PDOR &= ~MASK(GREEN_LED_7);
-		
-		PTC->PDOR |= MASK(GREEN_LED_8);		
-		osDelay(osDel);
-		//delay(del);
-		PTC->PDOR &= ~MASK(GREEN_LED_8);
+		led_green_blink(); 
 	}
+}
+
+void led_red_on() {
+	PTD->PDOR |= MASK(RED_LED);	
+}
+
+void led_red_off() {
+	PTD->PDOR &= ~MASK(RED_LED);
+}
+
+void led_red_blink() {
+	led_red_on();
+	osDelay(osDel);
+	//delay(del);
+	led_red_off();
 }
 
 void led_red_thread (void *argument) {
 	
 	// ...
   for (;;) {
-		PTD->PDOR |= MASK(RED_LED);		
-		osDelay(osDel);
-		//delay(del);
-		PTD->PDOR &= ~MASK(RED_LED);
-		osDelay(osDel);
-		//delay(del);
+		led_red_blink();
 	}
 }
 

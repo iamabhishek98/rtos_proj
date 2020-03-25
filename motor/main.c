@@ -127,13 +127,13 @@ void motor_thread (void *argument) {
 	// ...
   for (;;) {
 		
-		setFrequency(0, 2, 0.3);
+		setFrequency(0, 2, 0.5);
 		//osDelay(osDel);
-		setFrequency(2, 0, 0.3);
+		setFrequency(2, 0, 0.5);
 		//osDelay(osDel);
-		setFrequency(2, 1, 0.3);
+		setFrequency(2, 1, 0.5);
 		//osDelay(osDel);
-		setFrequency(1, 0, 0.3);
+		setFrequency(1, 0, 0.5);
 		//osDelay(osDel);
 	}
 }
