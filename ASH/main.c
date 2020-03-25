@@ -52,21 +52,6 @@ osMessageQueueId_t redMsg, greenMsg, motorMsg, audioMsg;
  
 // volatile int check = 0;
 
-// Queue data structure to hold the inputs
-
-typedef struct{
-unsigned char Data[Q_SIZE];
-unsigned int Head; // points to oldest data element
-unsigned int Tail; // points to next free space
-unsigned int Size; // quantity of elements in queue
-} Q_T;
- 
-Q_T TxQ, RxQ;
-
-//Data Packet for Message Queue
-typedef struct {
-	uint8_t cmd;
-} myDataPkt;
 
 
 
@@ -76,7 +61,7 @@ typedef struct {
 
 #define TIMER_CLCK_FREQ 375000 
 
-#define MOTOR_PWM_1 20 // PTE20 TPM1_CH0
+#define MOTOR_PWM_1 1 // PTB1 TPM1_CH1 PTE30 TPM0_CH3 PTE21 TPM1_CH1 PTE20 TPM1_CH0
 #define MOTOR_PWM_2 23 // PTE23 TPM2_CH1
 #define MOTOR_PWM_3 22 // PTE22 TPM2_CH0
 #define MOTOR_PWM_4 29 // PTE29 TPM0_CH2
@@ -111,6 +96,23 @@ float songspeed = 2; //Change to 2 for a slower version of the song, the bigger 
 #define NOTE_G5  784*del_song
 #define NOTE_A5  880*del_song
 #define NOTE_B5  988*del_song
+
+// Queue data structure to hold the inputs
+
+typedef struct{
+unsigned char Data[Q_SIZE];
+unsigned int Head; // points to oldest data element
+unsigned int Tail; // points to next free space
+unsigned int Size; // quantity of elements in queue
+} Q_T;
+ 
+Q_T TxQ, RxQ;
+
+//Data Packet for Message Queue
+typedef struct {
+	uint8_t cmd;
+} myDataPkt;
+
 //*****************************************
 int notes[] = {       //Note of the song, 0 is a rest/pulse
    NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0, 
@@ -253,11 +255,11 @@ void initPWM_buzzer(void) {
 
 void initPWM_motor(void) {
  // enable clock for PORT E
- SIM_SCGC5 |= SIM_SCGC5_PORTE_MASK;
+ SIM_SCGC5 |= SIM_SCGC5_PORTB_MASK | SIM_SCGC5_PORTE_MASK;
  
  // configure MUX functionality for PWM
- PORTE->PCR[MOTOR_PWM_1] &= ~PORT_PCR_MUX_MASK;
- PORTE->PCR[MOTOR_PWM_1] |= PORT_PCR_MUX(3);
+ PORTB->PCR[MOTOR_PWM_1] &= ~PORT_PCR_MUX_MASK;
+ PORTB->PCR[MOTOR_PWM_1] |= PORT_PCR_MUX(3);
  PORTE->PCR[MOTOR_PWM_2] &= ~PORT_PCR_MUX_MASK;
  PORTE->PCR[MOTOR_PWM_2] |= PORT_PCR_MUX(3);
  PORTE->PCR[MOTOR_PWM_3] &= ~PORT_PCR_MUX_MASK;
@@ -298,8 +300,8 @@ void initPWM_motor(void) {
  TPM2_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
  TPM2_C1SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSB_MASK));
  TPM2_C1SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
- TPM1_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSB_MASK));
- TPM1_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
+ TPM1_C1SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSB_MASK));
+ TPM1_C1SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 }
 
 void initMotor(void) {
@@ -482,9 +484,9 @@ void setFrequencyMotor(int PWM_module, int PWM_channel, float duty_cycle){
 	} else if (PWM_module == 2 && PWM_channel == 1) {
 		TPM2->MOD = mod;
 		TPM2_C1V = (mod+1)*duty_cycle;
-	} else if (PWM_module == 1 && PWM_channel == 0) {
+	} else if (PWM_module == 1 && PWM_channel == 1) {
 		TPM1->MOD = mod;
-		TPM1_C0V = (mod+1)*duty_cycle;
+		TPM1_C1V = (mod+1)*duty_cycle;
 	}
 }
 /*-------------------------------------------------------------------------------------------------------------------*/
@@ -503,7 +505,7 @@ void move_motor(int motor_num, float speed) {
 	int pwm_module = -1, channel_num = -1;
 	if (motor_num == 1) {
 		pwm_module = 1;
-		channel_num = 0;
+		channel_num = 1;
 		if (dir) PTB->PDOR |= MASK(MOTOR_DIR_1);
 		else PTB->PDOR &= ~MASK(MOTOR_DIR_1);
 	}
