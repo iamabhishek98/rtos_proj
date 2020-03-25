@@ -91,7 +91,7 @@ typedef struct {
 
 // Def. Song :
 
-#define PTB0_Pin 0
+#define BUZZER 0
 #define TIMER_CLCK_FREQ 375000 
 float songspeed = 2; //Change to 2 for a slower version of the song, the bigger the number the slower the song
 
@@ -233,8 +233,8 @@ int duration[] = {         //duration of each note (in ms) Quarter Note is set t
 void initPWM_buzzer(void) {
  SIM_SCGC5 |= SIM_SCGC5_PORTB_MASK;
  
- PORTB->PCR[PTB0_Pin] &= ~PORT_PCR_MUX_MASK;
- PORTB->PCR[PTB0_Pin] |= PORT_PCR_MUX(3);
+ PORTB->PCR[BUZZER] &= ~PORT_PCR_MUX_MASK;
+ PORTB->PCR[BUZZER] |= PORT_PCR_MUX(3);
  
  SIM_SCGC6 |= SIM_SCGC6_TPM1_MASK;
  
@@ -301,6 +301,161 @@ void initPWM_motor(void) {
  TPM1_C0SC &= ~((TPM_CnSC_ELSB_MASK) | (TPM_CnSC_ELSA_MASK) | (TPM_CnSC_MSB_MASK) | (TPM_CnSC_MSB_MASK));
  TPM1_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 }
+
+void initMotor(void) {
+	/* enable clock for port B & C */ 
+	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK | SIM_SCGC5_PORTC_MASK; 
+	
+	/* Select GPIO and enable pull-up resistors*/ 
+	PORTB->PCR[MOTOR_DIR_1] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTC->PCR[MOTOR_DIR_2] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTB->PCR[MOTOR_DIR_3] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTC->PCR[MOTOR_DIR_4] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	
+	/* Set port C & D switch bit to outputs */	
+	PTB->PDDR |= MASK(MOTOR_DIR_1);
+	PTC->PDDR |= MASK(MOTOR_DIR_2);
+	PTB->PDDR |= MASK(MOTOR_DIR_3);
+	PTC->PDDR |= MASK(MOTOR_DIR_4);
+
+	// active low 
+	
+	// set everything to 0
+	//PTC->PDOR |= MASK(MOTOR_DIR_1);
+  /*	
+	PTC->PDOR &= ~MASK(MOTOR_DIR_1);
+
+	PTC->PDOR |= MASK(MOTOR_DIR_2);		
+	
+	//PTB->PDOR |= MASK(MOTOR_DIR_3);		
+	PTB->PDOR &= ~MASK(MOTOR_DIR_3);
+	
+	PTB->PDOR |= MASK(MOTOR_DIR_4);		
+	*/	
+}
+
+void initLED(void) {
+	/* enable clock for port C & D */ 
+	SIM->SCGC5 |=  SIM_SCGC5_PORTC_MASK | SIM_SCGC5_PORTD_MASK; 
+	
+	/* Select GPIO and enable pull-up resistors*/ 
+	PORTC->PCR[GREEN_LED_1] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTC->PCR[GREEN_LED_2] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTC->PCR[GREEN_LED_3] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTC->PCR[GREEN_LED_4] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTC->PCR[GREEN_LED_5] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTC->PCR[GREEN_LED_6] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTC->PCR[GREEN_LED_7] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	PORTC->PCR[GREEN_LED_8] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	
+	PORTD->PCR[RED_LED] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
+	
+	
+	/* Set port C & D switch bit to outputs */	
+	PTC->PDDR |= MASK(GREEN_LED_1);
+	PTC->PDDR |= MASK(GREEN_LED_2);
+	PTC->PDDR |= MASK(GREEN_LED_3);	
+	PTC->PDDR |= MASK(GREEN_LED_4);	
+	PTC->PDDR |= MASK(GREEN_LED_5);	
+	PTC->PDDR |= MASK(GREEN_LED_6);	
+	PTC->PDDR |= MASK(GREEN_LED_7);	
+	PTC->PDDR |= MASK(GREEN_LED_8);	
+	
+	PTD->PDDR |= MASK(RED_LED);
+}
+
+// Initialize UART Module
+
+void initUART2(uint32_t baud_rate) {
+	uint32_t divisor, bus_clock;
+
+	SIM->SCGC4 |= SIM_SCGC4_UART2_MASK;
+	SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;
+
+	PORTD->PCR[2] &= ~PORT_PCR_MUX_MASK;
+	PORTD->PCR[2] |= PORT_PCR_MUX(3);
+
+	UART2->C2 &= ~((UART_C2_TE_MASK) | (UART_C2_RE_MASK));
+
+	bus_clock = (DEFAULT_SYSTEM_CLOCK)/2;
+	divisor = bus_clock / (baud_rate*16);
+	UART2->BDH = UART_BDH_SBR(divisor >> 8);
+	UART2->BDL = UART_BDL_SBR(divisor);
+
+	NVIC_SetPriority(UART2_IRQn, 128);
+	NVIC_ClearPendingIRQ(UART2_IRQn);
+	NVIC_EnableIRQ(UART2_IRQn);
+
+	UART2->C1 = 0;
+	UART2->S2 = 0;
+	UART2->C3 = 0;
+	
+	UART2->C2 |= ((UART_C2_TE_MASK) | (UART_C2_RE_MASK) | UART_C2_RIE_MASK);
+	Q_Init(&RxQ);
+}
+
+// Queue for Data from Bluetooth :
+
+void Q_Init(Q_T * q) {
+	unsigned int i;
+	for (i=0; i<Q_SIZE; i++)
+		q->Data[i] = 0; // to simplify our lives when debugging
+	q->Head = 0;
+	q->Tail = 0;
+	q->Size = 0;
+}
+ 
+int Q_Empty(Q_T * q) {
+	return q->Size == 0;
+}
+
+int Q_Full(Q_T * q) {
+	return q->Size == Q_SIZE;
+}
+ 
+int Q_Enqueue(Q_T * q, unsigned char d) {
+	// What if queue is full?
+	if (!Q_Full(q)) {
+			q->Data[q->Tail++] = d;
+			q->Tail %= Q_SIZE;
+			q->Size++;
+			return 1; // success
+	} else
+			return 0; // failure
+}
+
+unsigned char Q_Dequeue(Q_T * q) {
+    // Must check to see if queue is empty before dequeueing
+    unsigned char t=0;
+    if (!Q_Empty(q)) {
+        t = q->Data[q->Head];
+        q->Data[q->Head++] = 0; // to simplify debugging
+        q->Head %= Q_SIZE;
+        q->Size--;
+    }
+    return t;
+}
+
+/*-------------------------------------------------------------------------------------------------------------------
+ * UART Handler and Threads :
+ *-------------------------------------------------------------------------------------------------------------------*/
+
+//UART Handler :
+
+void UART2_IRQHandler(void) {
+    // check = 1;
+    if (UART2->S1 & UART_S1_RDRF_MASK) {
+        // received a character
+        if (!Q_Full(&RxQ)) {
+        Q_Enqueue(&RxQ, UART2->D);
+        } else {
+        // error -queue full.
+        }
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------*/
+
 
 /*-------------------------------------------------------------------------------------------------------------------*/
 
@@ -427,11 +582,11 @@ void move_right (float speed, int duration) {
 	move_motor(4, 0);
 }
 
-void curl_right (float speed, int duration) {
+void curl_right (float speed, int duration, int intensity) {
 	move_motor(1, speed);
-	move_motor(2, speed/2);
+	move_motor(2, speed/intensity);
 	move_motor(3, speed);
-	move_motor(4, speed/2);
+	move_motor(4, speed/intensity);
 	osDelay(duration);
 	move_motor(1, 0);
 	move_motor(2, 0);
@@ -439,10 +594,10 @@ void curl_right (float speed, int duration) {
 	move_motor(4, 0);
 }
 
-void curl_left (float speed, int duration) {
-	move_motor(1, speed/2);
+void curl_left (float speed, int duration, int intensity) {
+	move_motor(1, speed/intensity);
 	move_motor(2, speed);
-	move_motor(3, speed/2);
+	move_motor(3, speed/intensity);
 	move_motor(4, speed);
 	osDelay(duration);
 	move_motor(1, 0);
@@ -450,184 +605,34 @@ void curl_left (float speed, int duration) {
 	move_motor(3, 0);
 	move_motor(4, 0);
 }
+
 /*-------------------------------------------------------------------------------------------------------------------*/
 
 // GPIO Motor
 
-void initMotor(void) {
-	/* enable clock for port B & C */ 
-	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK | SIM_SCGC5_PORTC_MASK; 
-	
-	/* Select GPIO and enable pull-up resistors*/ 
-	PORTB->PCR[MOTOR_DIR_1] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	PORTC->PCR[MOTOR_DIR_2] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	PORTB->PCR[MOTOR_DIR_3] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	PORTC->PCR[MOTOR_DIR_4] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	
-	/* Set port C & D switch bit to outputs */	
-	PTB->PDDR |= MASK(MOTOR_DIR_1);
-	PTC->PDDR |= MASK(MOTOR_DIR_2);
-	PTB->PDDR |= MASK(MOTOR_DIR_3);
-	PTC->PDDR |= MASK(MOTOR_DIR_4);
-
-	// active low 
-	
-	// set everything to 0
-	//PTC->PDOR |= MASK(MOTOR_DIR_1);
-  /*	
-	PTC->PDOR &= ~MASK(MOTOR_DIR_1);
-
-	PTC->PDOR |= MASK(MOTOR_DIR_2);		
-	
-	//PTB->PDOR |= MASK(MOTOR_DIR_3);		
-	PTB->PDOR &= ~MASK(MOTOR_DIR_3);
-	
-	PTB->PDOR |= MASK(MOTOR_DIR_4);		
-	*/	
-}
 
 
 /*-------------------------------------------------------------------------------------------------------------------*/
 
 // GPIO LED :
 
-void initLED(void) {
-	/* enable clock for port C & D */ 
-	SIM->SCGC5 |=  SIM_SCGC5_PORTC_MASK | SIM_SCGC5_PORTD_MASK; 
-	
-	/* Select GPIO and enable pull-up resistors*/ 
-	PORTC->PCR[GREEN_LED_1] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	PORTC->PCR[GREEN_LED_2] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	PORTC->PCR[GREEN_LED_3] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	PORTC->PCR[GREEN_LED_4] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	PORTC->PCR[GREEN_LED_5] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	PORTC->PCR[GREEN_LED_6] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	PORTC->PCR[GREEN_LED_7] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	PORTC->PCR[GREEN_LED_8] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	
-	PORTD->PCR[RED_LED] |= PORT_PCR_MUX(1) | PORT_PCR_PS_MASK | PORT_PCR_PE_MASK;
-	
-	
-	/* Set port C & D switch bit to outputs */	
-	PTC->PDDR |= MASK(GREEN_LED_1);
-	PTC->PDDR |= MASK(GREEN_LED_2);
-	PTC->PDDR |= MASK(GREEN_LED_3);	
-	PTC->PDDR |= MASK(GREEN_LED_4);	
-	PTC->PDDR |= MASK(GREEN_LED_5);	
-	PTC->PDDR |= MASK(GREEN_LED_6);	
-	PTC->PDDR |= MASK(GREEN_LED_7);	
-	PTC->PDDR |= MASK(GREEN_LED_8);	
-	
-	PTD->PDDR |= MASK(RED_LED);
-}
-
-/*-------------------------------------------------------------------------------------------------------------------*/
-
-// Queue for Data from Bluetooth :
-
-void Q_Init(Q_T * q) {
-unsigned int i;
-for (i=0; i<Q_SIZE; i++)
-q->Data[i] = 0; // to simplify our lives when debugging
-q->Head = 0;
-q->Tail = 0;
-q->Size = 0;
-}
- 
-int Q_Empty(Q_T * q) {
-return q->Size == 0;
-}
-int Q_Full(Q_T * q) {
-return q->Size == Q_SIZE;
-}
- 
-int Q_Enqueue(Q_T * q, unsigned char d) {
-    // What if queue is full?
-    if (!Q_Full(q)) {
-        q->Data[q->Tail++] = d;
-        q->Tail %= Q_SIZE;
-        q->Size++;
-        return 1; // success
-    } else
-        return 0; // failure
-}
-unsigned char Q_Dequeue(Q_T * q) {
-    // Must check to see if queue is empty before dequeueing
-    unsigned char t=0;
-    if (!Q_Empty(q)) {
-        t = q->Data[q->Head];
-        q->Data[q->Head++] = 0; // to simplify debugging
-        q->Head %= Q_SIZE;
-        q->Size--;
-    }
-    return t;
-}
-
-/*-------------------------------------------------------------------------------------------------------------------*/
-
-//Initialize UART Module
-
-void initUART2(uint32_t baud_rate) {
-    uint32_t divisor, bus_clock;
- 
-    SIM->SCGC4 |= SIM_SCGC4_UART2_MASK;
-    SIM->SCGC5 |= SIM_SCGC5_PORTE_MASK;
- 
-    PORTE->PCR[UART_TX_PORTE22] &= ~PORT_PCR_MUX_MASK;
-    PORTE->PCR[UART_TX_PORTE22] |= PORT_PCR_MUX(4);
- 
-    PORTE->PCR[UART_RX_PORTE23] &= ~PORT_PCR_MUX_MASK;
-    PORTE->PCR[UART_RX_PORTE23] |= PORT_PCR_MUX(4);
-
-    UART2->C2 &= ~((UART_C2_TE_MASK) | (UART_C2_RE_MASK));
-
-    bus_clock = (DEFAULT_SYSTEM_CLOCK)/2;
-    divisor = bus_clock / (baud_rate*16);
-    UART2->BDH = UART_BDH_SBR(divisor >> 8);
-    UART2->BDL = UART_BDL_SBR(divisor);
- 
-    NVIC_SetPriority(UART2_IRQn, 128);
-    NVIC_ClearPendingIRQ(UART2_IRQn);
-    NVIC_EnableIRQ(UART2_IRQn);
- 
-    UART2->C1 = 0;
-    UART2->S2 = 0;
-    UART2->C3 = 0;
-		
-    UART2->C2 |= ((UART_C2_TE_MASK) | (UART_C2_RE_MASK) | UART_C2_RIE_MASK);
-    Q_Init(&RxQ);
-}
 
 
 /*-------------------------------------------------------------------------------------------------------------------*/
 
 
-/*-------------------------------------------------------------------------------------------------------------------
- * UART Handler and Threads :
- *-------------------------------------------------------------------------------------------------------------------*/
 
-//UART Handler :
-
-void UART2_IRQHandler(void) {
-    // check = 1;
-    if (UART2->S1 & UART_S1_RDRF_MASK) {
-        // received a character
-        if (!Q_Full(&RxQ)) {
-        Q_Enqueue(&RxQ, UART2->D);
-        } else {
-        // error -queue full.
-        }
-    }
-}
 
 /*-------------------------------------------------------------------------------------------------------------------*/
+
+
 
 // Threads :
 
 void tAudio (void *argument) {
 	// ...
 	myDataPkt myRxData;
-	int flag = 0;
+	int isBluetoothConnect = 0;
   for (;;) {
 		osMessageQueueGet(audioMsg, &myRxData, NULL, osWaitForever);
 		// before starting the flag will be 0 hence there will be no sound.
@@ -637,107 +642,148 @@ void tAudio (void *argument) {
 			// play unique connection tune.
 			// These for the time beaing are random exerpts from the main tune :D
 			for (int i=50;i<66;i++){              
-			int wait = duration[i] * songspeed;
-			setFrequencyBuzzer(notes[i]);
-			osDelay(wait);
+				int wait = duration[i] * songspeed;
+				setFrequencyBuzzer(notes[i]);
+				osDelay(wait);
 			}	      
-			flag = 1;
+			isBluetoothConnect = 1;
 		} 
-		if (myRxData.cmd == 0x07) {
+		else if (myRxData.cmd == 0x07) {
 			
 			//play victory tune
 			for (int i=100;i<130;i++){              
-			int wait = duration[i] * songspeed;
-			setFrequencyBuzzer(notes[i]);
-			osDelay(wait);
+				int wait = duration[i] * songspeed;
+				setFrequencyBuzzer(notes[i]);
+				osDelay(wait);
 			}	      
 			// Once challenge is over you can turn off the main tune.
-			flag = 0;
+			isBluetoothConnect = 0;
 		}
-		if (flag ==1) {
+		if (isBluetoothConnect) {
 			// Main tune if the challenge has started
 			for (int i=0;i<203;i++){              //203 is the total number of music notes in the song
-			int wait = duration[i] * songspeed;
-			setFrequencyBuzzer(notes[i]);          //tone(pin,frequency,duration)
-			osDelay(wait);
+				int wait = duration[i] * songspeed;
+				setFrequencyBuzzer(notes[i]);          //tone(pin,frequency,duration)
+				osDelay(wait);
 			}	              
 		}
 	}
 }
 
 /*-------------------------------------------------------------------------------------------------------------------*/
+void led_green_on() {
+	PTC->PDOR |= MASK(GREEN_LED_1);
+	PTC->PDOR |= MASK(GREEN_LED_2);
+	PTC->PDOR |= MASK(GREEN_LED_3);
+	PTC->PDOR |= MASK(GREEN_LED_4);
+	PTC->PDOR |= MASK(GREEN_LED_5);
+	PTC->PDOR |= MASK(GREEN_LED_6);
+	PTC->PDOR |= MASK(GREEN_LED_7);
+	PTC->PDOR |= MASK(GREEN_LED_8);
+}
+
+void led_green_off() {
+	PTC->PDOR &= ~MASK(GREEN_LED_1);
+	PTC->PDOR &= ~MASK(GREEN_LED_2);
+	PTC->PDOR &= ~MASK(GREEN_LED_3);
+	PTC->PDOR &= ~MASK(GREEN_LED_4);
+	PTC->PDOR &= ~MASK(GREEN_LED_5);
+	PTC->PDOR &= ~MASK(GREEN_LED_6);
+	PTC->PDOR &= ~MASK(GREEN_LED_7);
+	PTC->PDOR &= ~MASK(GREEN_LED_8);
+}
+
+void led_green_running(int delay) {
+	PTC->PDOR |= MASK(GREEN_LED_1);		
+	osDelay(delay);
+	PTC->PDOR &= ~MASK(GREEN_LED_1);
+	
+	PTC->PDOR |= MASK(GREEN_LED_2);		
+	osDelay(delay);
+	PTC->PDOR &= ~MASK(GREEN_LED_2);
+	
+	PTC->PDOR |= MASK(GREEN_LED_3);		
+	osDelay(delay);
+	PTC->PDOR &= ~MASK(GREEN_LED_3);
+	
+	PTC->PDOR |= MASK(GREEN_LED_4);		
+	osDelay(delay);
+	PTC->PDOR &= ~MASK(GREEN_LED_4);
+	
+	PTC->PDOR |= MASK(GREEN_LED_5);		
+	osDelay(delay);
+	PTC->PDOR &= ~MASK(GREEN_LED_5);
+	
+	PTC->PDOR |= MASK(GREEN_LED_6);		
+	osDelay(delay);
+	PTC->PDOR &= ~MASK(GREEN_LED_6);
+	
+	PTC->PDOR |= MASK(GREEN_LED_7);		
+	osDelay(delay);
+	PTC->PDOR &= ~MASK(GREEN_LED_7);
+	
+	PTC->PDOR |= MASK(GREEN_LED_8);		
+	osDelay(delay);
+	PTC->PDOR &= ~MASK(GREEN_LED_8);
+}
 
 void led_green_thread (void *argument) {
 	myDataPkt myRxData;
 	// ...
   for (;;) {
 		osMessageQueueGet(greenMsg, &myRxData, NULL, osWaitForever);
-		if(myRxData.cmd ==0x00 || myRxData.cmd == 0x07 || myRxData.cmd == 0x08) {
-			// light up all together when you are waiting
-			
-			PTC->PDOR |= MASK(GREEN_LED_1);
-			PTC->PDOR |= MASK(GREEN_LED_2);
-			PTC->PDOR |= MASK(GREEN_LED_3);
-			PTC->PDOR |= MASK(GREEN_LED_4);
-			PTC->PDOR |= MASK(GREEN_LED_5);
-			PTC->PDOR |= MASK(GREEN_LED_6);
-			PTC->PDOR |= MASK(GREEN_LED_7);
-			PTC->PDOR |= MASK(GREEN_LED_8);
+		if (myRxData.cmd == 0x09) {
+			led_green_off();
+		}
+		else if(myRxData.cmd ==0x00){
+			led_green_on();
+			osDelay(500);				
+			led_green_off();
+			osDelay(500);	
+			led_green_on();
+			osDelay(500);				
+			led_green_off();
+		} else if (myRxData.cmd == 0x07 || myRxData.cmd == 0x08) {
+			// light up all together when you are waiting			
+			led_green_on();
 			osDelay(osDel);	
 			
 		} else {
 			// light up in sequence while it is moving
-			PTC->PDOR |= MASK(GREEN_LED_1);		
+			led_green_running(1000);
 			osDelay(osDel);
-			PTC->PDOR &= ~MASK(GREEN_LED_1);
-			
-			PTC->PDOR |= MASK(GREEN_LED_2);		
-			osDelay(osDel);
-			PTC->PDOR &= ~MASK(GREEN_LED_2);
-			
-			PTC->PDOR |= MASK(GREEN_LED_3);		
-			osDelay(osDel);
-			PTC->PDOR &= ~MASK(GREEN_LED_3);
-			
-			PTC->PDOR |= MASK(GREEN_LED_4);		
-			osDelay(osDel);
-			PTC->PDOR &= ~MASK(GREEN_LED_4);
-			
-			PTC->PDOR |= MASK(GREEN_LED_5);		
-			osDelay(osDel);
-			PTC->PDOR &= ~MASK(GREEN_LED_5);
-			
-			PTC->PDOR |= MASK(GREEN_LED_6);		
-			osDelay(osDel);
-			PTC->PDOR &= ~MASK(GREEN_LED_6);
-			
-			PTC->PDOR |= MASK(GREEN_LED_7);		
-			osDelay(osDel);
-			PTC->PDOR &= ~MASK(GREEN_LED_7);
-			
-			PTC->PDOR |= MASK(GREEN_LED_8);		
-			osDelay(osDel);
-			PTC->PDOR &= ~MASK(GREEN_LED_8);
 		}
 	}
 }
 
 /*-------------------------------------------------------------------------------------------------------------------*/
 
+
+void led_red_on() {
+	PTD->PDOR |= MASK(RED_LED);		
+}
+
+void led_red_off() {
+	PTD->PDOR &= ~MASK(RED_LED);	
+}
+
 void led_red_thread (void *argument) {
 	myDataPkt myRxData;
   for (;;) {
 		osMessageQueueGet(redMsg, &myRxData, NULL, osWaitForever);
-		if(myRxData.cmd ==0x00 || myRxData.cmd == 0x07 || myRxData.cmd == 0x08) {
-		PTD->PDOR |= MASK(RED_LED);		
-		osDelay(250);
-		PTD->PDOR &= ~MASK(RED_LED);
-		osDelay(250);
+		if (myRxData.cmd == 0x09) {
+			led_red_off();
+		}
+		else if(myRxData.cmd == 0x00 || myRxData.cmd == 0x07 || myRxData.cmd == 0x08) {
+			led_red_on();	
+			osDelay(250);
+			led_red_off();
+			osDelay(250);
 		} else {
-		PTD->PDOR |= MASK(RED_LED);		
-		osDelay(500);
-		PTD->PDOR &= ~MASK(RED_LED);
-		osDelay(500);
+			led_red_on();	
+			osDelay(500);
+			led_red_off();
+			osDelay(500);
 		}
 	}
 }
@@ -761,12 +807,15 @@ void tBrain (void *argument) {
 	// 0x06 - Curve Right (CR)
 	
 	myDataPkt myData;
+	myData.cmd = 0x09; // 9 is the start state
+	int x = 11;
   for (;;) {
 		// uint8_t data;
 		// If there is a command which comes in then you have to execute it 
+		x = myData.cmd;
 		if(!Q_Empty(&RxQ)) {
 				myData.cmd = Q_Dequeue(&RxQ);
-    } else {
+    } else if (myData.cmd != 0x09) {
 				// Once the command is executed or if no command u go back into the waiting state
 				myData.cmd = 0x08;
 		}
@@ -774,7 +823,7 @@ void tBrain (void *argument) {
 		osMessageQueuePut(greenMsg, &myData, NULL, 0);
 		osMessageQueuePut(audioMsg, &myData, NULL, 0);
 		osMessageQueuePut(motorMsg, &myData, NULL, 0);
-		osDelay(osDel);
+		osDelay(10); // may or may not be necessary
 	}
 }
 
@@ -793,15 +842,15 @@ void tMotorControl (void *argument) {
 		} else if (myRxData.cmd == 0x04){//Back
 			move_backward(0.5, 1000);
 		} else if (myRxData.cmd == 0x05){//CL
-			curl_left(0.5, 1000);
+			curl_left(0.5, 1000, 3);
 		} else if (myRxData.cmd == 0x06){//CR
-			curl_right(0.5, 1000);
+			curl_right(0.5, 1000, 3);
 		} else {
 			// No moving when in wait state, connection state or victory tune state
 			// myRxData.cmd == 0x00 || myRxData.cmd == 0x08 || myRxData.cmd == 0x07
 		}
 		// This osdelay may or my not be needed 
-		osDelay(osDel);
+		// osDelay(osDel);
 	}
 }
 
