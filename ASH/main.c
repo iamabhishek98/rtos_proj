@@ -25,7 +25,11 @@ osThreadId_t redLED_Id, greenLED_Id, motor_Id, brain_Id, audio_Id ;
 // Message Queue ids :
 osMessageQueueId_t redMsg, greenMsg, motorMsg, audioMsg;
 
-#define MSG_COUNT 4
+volatile int isMotorMoving = 0;
+
+volatile int isFinished = 0;
+
+#define MSG_COUNT 5
 
 /*-------------------------------------------------------------------------------------------------------------------*/
 
@@ -567,7 +571,6 @@ unsigned char Q_Dequeue(Q_T * q) {
 //UART Handler :
 
 void UART2_IRQHandler(void) {
-    // check = 1;
     if (UART2->S1 & UART_S1_RDRF_MASK) {
         // received a character
         if (!Q_Full(&RxQ)) {
@@ -774,25 +777,27 @@ void tAudio (void *argument) {
 		} 
 		else if (myRxData.cmd == 0x07) {     
 			// Once challenge is over you can turn off the main tune.
-			move_forward(0.9, 1000);
 			isBluetoothConnect = 2;
+			isFinished = 1;
 		}
 		if (isBluetoothConnect == 1) {
 			// Main tune if the challenge has started
-			for (int i=0;i<3;i++){              //203 is the total number of music end_melody in the song
+			for (int i=0;i<5;i++){              //203 is the total number of music end_melody in the song
 				int wait = running_duration[i] * songspeed;
 				setFrequencyBuzzer(running_melody[i]);          //tone(pin,frequency,duration)
 				osDelay(wait);
-			}	              
+			}
+			
 		}	else if (isBluetoothConnect == 2) {
 			//play victory tune
-			for (int i=0;i<10;i++){              
-				int wait = end_duration[i] * songspeed;
-				setFrequencyBuzzer(end_melody[i]);
-				osDelay(wait);
-			}	
-			setFrequencyBuzzer(0);
-			isBluetoothConnect = 0;
+			while (isFinished) {
+				for (int i=0;i<10;i++){              
+					int wait = end_duration[i] * songspeed;
+					setFrequencyBuzzer(end_melody[i]);
+					osDelay(wait);
+				}	
+				setFrequencyBuzzer(0);
+			}
 		}
 		
 	}
@@ -826,29 +831,43 @@ void led_green_running(int delay) {
 	osDelay(delay);
 	PTC->PDOR &= ~MASK(GREEN_LED_1);
 	
+	if(!isMotorMoving) return;
+	
 	PTC->PDOR |= MASK(GREEN_LED_2);		
 	osDelay(delay);
 	PTC->PDOR &= ~MASK(GREEN_LED_2);
+	
+	if(!isMotorMoving) return;
 	
 	PTC->PDOR |= MASK(GREEN_LED_3);		
 	osDelay(delay);
 	PTC->PDOR &= ~MASK(GREEN_LED_3);
 	
+	if(!isMotorMoving) return;
+	
 	PTC->PDOR |= MASK(GREEN_LED_4);		
 	osDelay(delay);
 	PTC->PDOR &= ~MASK(GREEN_LED_4);
+	
+	if(!isMotorMoving) return;
 	
 	PTC->PDOR |= MASK(GREEN_LED_5);		
 	osDelay(delay);
 	PTC->PDOR &= ~MASK(GREEN_LED_5);
 	
+	if(!isMotorMoving) return;
+	
 	PTC->PDOR |= MASK(GREEN_LED_6);		
 	osDelay(delay);
 	PTC->PDOR &= ~MASK(GREEN_LED_6);
 	
+	if(!isMotorMoving) return;
+	
 	PTC->PDOR |= MASK(GREEN_LED_7);		
 	osDelay(delay);
 	PTC->PDOR &= ~MASK(GREEN_LED_7);
+	
+	if(!isMotorMoving) return;
 	
 	PTC->PDOR |= MASK(GREEN_LED_8);		
 	osDelay(delay);
@@ -865,21 +884,25 @@ void led_green_thread (void *argument) {
 		}
 		else if(myRxData.cmd ==0x00){
 			led_green_on();
-			osDelay(500);				
+			osDelay(250);				
 			led_green_off();
-			osDelay(500);	
+			osDelay(250);	
 			led_green_on();
-			osDelay(500);				
+			osDelay(250);				
 			led_green_off();
+			osDelay(250);
 		} else if (myRxData.cmd == 0x07 || myRxData.cmd == 0x08) {
 			// light up all together when you are waiting			
-			led_green_on();
-			osDelay(osDel);	
+			led_green_on();	
 			
 		} else {
 			// light up in sequence while it is moving
-			led_green_running(1000);
-			osDelay(osDel);
+			
+				led_green_off();
+				while (isMotorMoving) {
+					led_green_running(300);
+				}	
+				// osDelay(osDel);
 		}
 	}
 }
@@ -899,19 +922,23 @@ void led_red_thread (void *argument) {
 	myDataPkt myRxData;
   for (;;) {
 		osMessageQueueGet(redMsg, &myRxData, NULL, osWaitForever);
-		if (myRxData.cmd == 0x09) {
+		if (myRxData.cmd == 0x00 || myRxData.cmd == 0x09) {
 			led_red_off();
 		}
-		else if(myRxData.cmd == 0x00 || myRxData.cmd == 0x07 || myRxData.cmd == 0x08) {
-			led_red_on();	
-			osDelay(250);
-			led_red_off();
-			osDelay(250);
+		else if(myRxData.cmd == 0x07 || myRxData.cmd == 0x08) {
+			while (!isMotorMoving) {
+				led_red_on();	
+				osDelay(250);
+				led_red_off();
+				osDelay(250);
+			}	
 		} else {
-			led_red_on();	
-			osDelay(500);
-			led_red_off();
-			osDelay(500);
+				while (isMotorMoving) {
+					led_red_on();	
+					osDelay(500);
+					led_red_off();
+					osDelay(500);
+				}	
 		}
 	}
 }
@@ -939,17 +966,19 @@ void tBrain (void *argument) {
   for (;;) {
 		// uint8_t data;
 		// If there is a command which comes in then you have to execute it 
-		if(!Q_Empty(&RxQ)) {
+		
+		if (!isFinished) {
+			if(!Q_Empty(&RxQ)) {
 				myData.cmd = Q_Dequeue(&RxQ);
-    } else if (myData.cmd != 0x09) {
-				// Once the command is executed or if no command u go back into the waiting state
-				myData.cmd = 0x08;
+			} else if (myData.cmd != 0x09) {
+					// Once the command is executed or if no command u go back into the waiting state
+					myData.cmd = 0x08;
+			}
+			osMessageQueuePut(audioMsg, &myData, NULL, 0);
+			osMessageQueuePut(motorMsg, &myData, NULL, 0);
 		}
-		osMessageQueuePut(redMsg, &myData, NULL, 0);
-		osMessageQueuePut(greenMsg, &myData, NULL, 0);
-		osMessageQueuePut(audioMsg, &myData, NULL, 0);
-		osMessageQueuePut(motorMsg, &myData, NULL, 0);
-		osDelay(500); // may or may not be necessary
+		
+		osDelay(1000); // it is necessary
 	}
 }
 
@@ -958,25 +987,38 @@ void tBrain (void *argument) {
 void tMotorControl (void *argument) {
 	myDataPkt myRxData;
   for (;;) {
+		int default_movement_duration = 1000;
 		osMessageQueueGet(motorMsg, &myRxData, NULL, osWaitForever);
-		 if (myRxData.cmd == 0x01){//Forward
-			move_forward(0.5, 1000);
+			
+		osMessageQueuePut(redMsg, &myRxData, NULL, 0);
+		osMessageQueuePut(greenMsg, &myRxData, NULL, 0);
+		
+		if (!(myRxData.cmd == 0x00 || 
+			myRxData.cmd == 0x07 || 
+			myRxData.cmd == 0x08)) {
+			isMotorMoving = 1;
+		}
+		
+		if (myRxData.cmd == 0x01){//Forward
+			move_forward(0.5, default_movement_duration);
 		} else if (myRxData.cmd == 0x02){//Left
-			move_left(0.5, 1000);
+			move_left(0.5, default_movement_duration);
 		} else if (myRxData.cmd == 0x03){//Right
-			move_right(0.5, 1000);
+			move_right(0.5, default_movement_duration);
 		} else if (myRxData.cmd == 0x04){//Back
-			move_backward(0.5, 1000);
+			move_backward(0.5, default_movement_duration);
 		} else if (myRxData.cmd == 0x05){//CL
-			curl_left(0.5, 1000, 3);
+			curl_left(0.5, default_movement_duration, 3);
 		} else if (myRxData.cmd == 0x06){//CR
-			curl_right(0.5, 1000, 3);
+			curl_right(0.5, default_movement_duration, 3);
 		} else {
+			move_forward(0.0, 10);
 			// No moving when in wait state, connection state or victory tune state
 			// myRxData.cmd == 0x00 || myRxData.cmd == 0x08 || myRxData.cmd == 0x07
 		}
-		// This osdelay may or my not be needed 
-		// osDelay(osDel);
+		
+		isMotorMoving = 0;
+		osDelay(30); // allow motor to switch off
 	}
 }
 

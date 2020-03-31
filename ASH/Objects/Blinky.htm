@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\Blinky.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Blinky.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Mar 25 20:02:25 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Tue Mar 31 19:25:25 2020
 <BR><P>
 <H3>Maximum Stack Usage =        120 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -415,7 +415,8 @@ Global Symbols
 <P><STRONG><a name="[81]"></a>osDelay</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, rtx_delay.o(.text.osDelay))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = osDelay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[39]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBrain
+<BR>[Called By]<UL><LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tMotorControl
+<LI><a href="#[39]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBrain
 <LI><a href="#[3a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tAudio
 <LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;move_right
 <LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;move_left
@@ -470,7 +471,8 @@ Global Symbols
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osRtxMemoryPoolAlloc
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
 </UL>
-<BR>[Called By]<UL><LI><a href="#[39]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBrain
+<BR>[Called By]<UL><LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tMotorControl
+<LI><a href="#[39]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tBrain
 <LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osRtxTimerTick
 </UL>
 
@@ -815,7 +817,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;led_green_thread
 </UL>
 
-<P><STRONG><a name="[86]"></a>led_green_running</STRONG> (Thumb, 252 bytes, Stack size 8 bytes, main.o(i.led_green_running))
+<P><STRONG><a name="[86]"></a>led_green_running</STRONG> (Thumb, 326 bytes, Stack size 8 bytes, main.o(i.led_green_running))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = led_green_running &rArr; osDelay
 </UL>
 <BR>[Calls]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
@@ -823,7 +825,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;led_green_thread
 </UL>
 
-<P><STRONG><a name="[3c]"></a>led_green_thread</STRONG> (Thumb, 132 bytes, Stack size 8 bytes, main.o(i.led_green_thread))
+<P><STRONG><a name="[3c]"></a>led_green_thread</STRONG> (Thumb, 130 bytes, Stack size 8 bytes, main.o(i.led_green_thread))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = led_green_thread &rArr; osMessageQueueGet &rArr; osRtxPostProcess &rArr; osRtxErrorNotify &rArr; __ARM_common_switch8
 </UL>
 <BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMessageQueueGet
@@ -842,7 +844,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;led_red_thread
 </UL>
 
-<P><STRONG><a name="[3b]"></a>led_red_thread</STRONG> (Thumb, 106 bytes, Stack size 8 bytes, main.o(i.led_red_thread))
+<P><STRONG><a name="[3b]"></a>led_red_thread</STRONG> (Thumb, 126 bytes, Stack size 8 bytes, main.o(i.led_red_thread))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = led_red_thread &rArr; osMessageQueueGet &rArr; osRtxPostProcess &rArr; osRtxErrorNotify &rArr; __ARM_common_switch8
 </UL>
 <BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMessageQueueGet
@@ -885,7 +887,6 @@ Global Symbols
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;move_motor
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tMotorControl
-<LI><a href="#[3a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tAudio
 </UL>
 
 <P><STRONG><a name="[94]"></a>move_left</STRONG> (Thumb, 98 bytes, Stack size 16 bytes, main.o(i.move_left))
@@ -955,8 +956,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;move_motor
 </UL>
 
-<P><STRONG><a name="[3a]"></a>tAudio</STRONG> (Thumb, 242 bytes, Stack size 16 bytes, main.o(i.tAudio))
-<BR><BR>[Stack]<UL><LI>Max Depth = 116<LI>Call Chain = tAudio &rArr; move_forward &rArr; move_motor &rArr; setFrequencyMotor &rArr; __aeabi_idivmod &rArr; __aeabi_uidivmod
+<P><STRONG><a name="[3a]"></a>tAudio</STRONG> (Thumb, 246 bytes, Stack size 16 bytes, main.o(i.tAudio))
+<BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = tAudio &rArr; osMessageQueueGet &rArr; osRtxPostProcess &rArr; osRtxErrorNotify &rArr; __ARM_common_switch8
 </UL>
 <BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMessageQueueGet
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
@@ -964,11 +965,10 @@ Global Symbols
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_fmul
 <LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2iz
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFrequencyBuzzer
-<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;move_forward
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
-<P><STRONG><a name="[39]"></a>tBrain</STRONG> (Thumb, 106 bytes, Stack size 8 bytes, main.o(i.tBrain))
+<P><STRONG><a name="[39]"></a>tBrain</STRONG> (Thumb, 86 bytes, Stack size 8 bytes, main.o(i.tBrain))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = tBrain &rArr; osMessageQueuePut &rArr; osRtxPostProcess &rArr; osRtxErrorNotify &rArr; __ARM_common_switch8
 </UL>
 <BR>[Calls]<UL><LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMessageQueuePut
@@ -978,10 +978,12 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> main.o(i.main)
 </UL>
-<P><STRONG><a name="[3d]"></a>tMotorControl</STRONG> (Thumb, 156 bytes, Stack size 8 bytes, main.o(i.tMotorControl))
+<P><STRONG><a name="[3d]"></a>tMotorControl</STRONG> (Thumb, 228 bytes, Stack size 8 bytes, main.o(i.tMotorControl))
 <BR><BR>[Stack]<UL><LI>Max Depth = 116<LI>Call Chain = tMotorControl &rArr; curl_right &rArr; move_motor &rArr; setFrequencyMotor &rArr; __aeabi_idivmod &rArr; __aeabi_uidivmod
 </UL>
-<BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMessageQueueGet
+<BR>[Calls]<UL><LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMessageQueuePut
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osMessageQueueGet
+<LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osDelay
 <LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;move_right
 <LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;move_left
 <LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;move_forward
