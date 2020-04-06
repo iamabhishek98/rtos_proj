@@ -26,8 +26,8 @@ osThreadId_t redLED_Id, greenLED_Id, motor_Id, brain_Id, audio_Id ;
 osMessageQueueId_t redMsg, greenMsg, motorMsg, audioMsg;
 
 volatile int isMotorMoving = 0;
-
 volatile int isFinished = 0;
+volatile int musicCount = 0;
 
 #define MSG_COUNT 5
 
@@ -780,18 +780,23 @@ void tAudio (void *argument) {
 			isBluetoothConnect = 2;
 			isFinished = 1;
 		}
-		if (isBluetoothConnect == 1) {
+		if (isBluetoothConnect == 1 && !isFinished) {
 			// Main tune if the challenge has started
-			for (int i=0;i<5;i++){              //203 is the total number of music end_melody in the song
-				int wait = running_duration[i] * songspeed;
-				setFrequencyBuzzer(running_melody[i]);          //tone(pin,frequency,duration)
+			int max_count = musicCount+4;
+			while (musicCount < max_count) {
+				if (musicCount == 34) {
+					max_count = 0; musicCount = 0;
+				}
+				int wait = running_duration[musicCount] * songspeed;
+				setFrequencyBuzzer(running_melody[musicCount]);          //tone(pin,frequency,duration)
+				musicCount++;
 				osDelay(wait);
 			}
 			
 		}	else if (isBluetoothConnect == 2) {
 			//play victory tune
 			while (isFinished) {
-				for (int i=0;i<10;i++){              
+				for (int i=0;i<sizeof(end_melody);i++){              
 					int wait = end_duration[i] * songspeed;
 					setFrequencyBuzzer(end_melody[i]);
 					osDelay(wait);
@@ -900,7 +905,7 @@ void led_green_thread (void *argument) {
 			
 				led_green_off();
 				while (isMotorMoving) {
-					led_green_running(300);
+					led_green_running(80);
 				}	
 				// osDelay(osDel);
 		}
@@ -987,7 +992,7 @@ void tBrain (void *argument) {
 void tMotorControl (void *argument) {
 	myDataPkt myRxData;
   for (;;) {
-		int default_movement_duration = 1000;
+		int default_movement_duration = 500;
 		osMessageQueueGet(motorMsg, &myRxData, NULL, osWaitForever);
 			
 		osMessageQueuePut(redMsg, &myRxData, NULL, 0);
@@ -1000,25 +1005,28 @@ void tMotorControl (void *argument) {
 		}
 		
 		if (myRxData.cmd == 0x01){//Forward
-			move_forward(0.5, default_movement_duration);
+			move_forward(0.9, default_movement_duration);
 		} else if (myRxData.cmd == 0x02){//Left
-			move_left(0.5, default_movement_duration);
+			move_left(0.7, default_movement_duration);
 		} else if (myRxData.cmd == 0x03){//Right
-			move_right(0.5, default_movement_duration);
+			move_right(0.7, default_movement_duration);
 		} else if (myRxData.cmd == 0x04){//Back
-			move_backward(0.5, default_movement_duration);
+			move_backward(0.9, default_movement_duration);
 		} else if (myRxData.cmd == 0x05){//CL
-			curl_left(0.5, default_movement_duration, 3);
+			move_left(0.7, 200);
+			//curl_left(0.9, default_movement_duration, 3);
 		} else if (myRxData.cmd == 0x06){//CR
-			curl_right(0.5, default_movement_duration, 3);
+			move_right(0.7, 200);
+			// curl_right(0.9, default_movement_duration, 3);
 		} else {
 			move_forward(0.0, 10);
 			// No moving when in wait state, connection state or victory tune state
 			// myRxData.cmd == 0x00 || myRxData.cmd == 0x08 || myRxData.cmd == 0x07
 		}
 		
-		isMotorMoving = 0;
 		osDelay(30); // allow motor to switch off
+		isMotorMoving = 0;
+		
 	}
 }
 
