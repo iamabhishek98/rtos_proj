@@ -1,6 +1,6 @@
 #include "custom_queue.h"
 
-// Queue for Data from Bluetooth :
+// Initialize the Queue
 void Q_Init(Q_T * q)
 {
 	unsigned int i;
@@ -21,9 +21,10 @@ int Q_Full(Q_T * q)
 	return q->Size == Q_SIZE;
 }
  
+// Enqueue new data into the queue, 
+// returning false if queue is full
 int Q_Enqueue(Q_T * q, unsigned char d)
 {
-	// What if queue is full?
 	if (!Q_Full(q)) {
 			q->Data[q->Tail++] = d;
 			q->Tail %= Q_SIZE;
@@ -33,6 +34,8 @@ int Q_Enqueue(Q_T * q, unsigned char d)
 			return 0; // failure
 }
 
+// Get the oldest data (FIFO) to dequeue if
+// the queue is non-empty
 unsigned char Q_Dequeue(Q_T * q)
 {
     // Must check to see if queue is empty before dequeueing

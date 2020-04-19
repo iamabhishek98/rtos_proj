@@ -1,5 +1,6 @@
 #include "motor_control.h"
 
+// Configure PWM module for 4 motor Pins
 void initPWM_motor(void) 
 {
  // enable clock for PORT E
@@ -52,7 +53,8 @@ void initPWM_motor(void)
  TPM1_C1SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 }
 
-void initMotor(void) 
+// Configure GPIO module for another 4 motor Pins
+void initGPIOMotor(void) 
 {
 	/* enable clock for port B & C */ 
 	SIM->SCGC5 |= SIM_SCGC5_PORTB_MASK | SIM_SCGC5_PORTC_MASK; 
@@ -70,56 +72,70 @@ void initMotor(void)
 	PTC->PDDR |= MASK(MOTOR_DIR_4);
 }
 
+// Set frequency of PWM module of motor
 void setFrequencyMotor(int PWM_module, int PWM_channel, float duty_cycle)
 {
 	int frequency = 2000;
 	int mod = (TIMER_CLCK_FREQ / frequency) - 1;
 	
-	if (PWM_module == 0 && PWM_channel == 2) {
+	if (PWM_module == 0 && PWM_channel == 2)
+	{
 		TPM0->MOD = mod;
 		TPM0_C2V = (mod+1)*duty_cycle;
-	} else if (PWM_module == 2 && PWM_channel == 0) {
+	} 
+	else if (PWM_module == 2 && PWM_channel == 0)
+	{
 		TPM2->MOD = mod;
 		TPM2_C0V = (mod+1)*duty_cycle;
-	} else if (PWM_module == 2 && PWM_channel == 1) {
+	} 
+	else if (PWM_module == 2 && PWM_channel == 1)
+	{
 		TPM2->MOD = mod;
 		TPM2_C1V = (mod+1)*duty_cycle;
-	} else if (PWM_module == 1 && PWM_channel == 1) {
+	} 
+	else if (PWM_module == 1 && PWM_channel == 1)
+	{
 		TPM1->MOD = mod;
 		TPM1_C1V = (mod+1)*duty_cycle;
 	}
 }
 
-void move_motor(int motor_num, float speed)
+// Main helper function to control individual motor
+// motor_num is from [1,4] inclusive, mapping is on the actual vehicle
+void moveMotor(int motor_num, float speed)
 {
-	
 	int dir = 0;
-	// DIR = 1 reverse, 0 forward.
-	if (speed < 0) {
+	// DIR = 1 reverse, DIR = 0 forward.
+	if (speed < 0)
+	{
 		dir = 1;
 		speed = 1 + speed;
 	}
 	
 	int pwm_module = -1, channel_num = -1;
-	if (motor_num == 1) {
+	if (motor_num == 1)
+	{
 		pwm_module = 1;
 		channel_num = 1;
 		if (dir) PTB->PDOR |= MASK(MOTOR_DIR_1);
 		else PTB->PDOR &= ~MASK(MOTOR_DIR_1);
 	}
-	else if (motor_num == 2) {
+	else if (motor_num == 2)
+	{
 		pwm_module = 2;
 		channel_num = 1;
 		if (dir) PTC->PDOR |= MASK(MOTOR_DIR_2);
 		else PTC->PDOR &= ~MASK(MOTOR_DIR_2);
 	}
-	else if (motor_num == 3) {
+	else if (motor_num == 3)
+	{
 		pwm_module = 2;
 		channel_num = 0;
 		if (dir) PTB->PDOR |= MASK(MOTOR_DIR_3);
 		else PTB->PDOR &= ~MASK(MOTOR_DIR_3);
 	}
-	else if (motor_num == 4) {
+	else if (motor_num == 4)
+	{
 		pwm_module = 0;
 		channel_num = 2;
 		if (dir) PTC->PDOR |= MASK(MOTOR_DIR_4);
@@ -129,85 +145,89 @@ void move_motor(int motor_num, float speed)
 	setFrequencyMotor(pwm_module, channel_num, speed);	
 	
 }
+/***********************************************************
+   Specialized Movement Functions for the vehicle 
+   (controlling all 4 motors)
+***********************************************************/
 
-/*-------------------------------------------------------------------------------------------------------------------*/
-
-// Movement Functions for Motor :
-
-void move_forward(float speed, int duration) 
+void moveForward(float speed, int duration) 
 {
-	move_motor(1, speed);
-	move_motor(2, speed);
-	move_motor(3, speed);
-	move_motor(4, speed);
+	moveMotor(1, speed);
+	moveMotor(2, speed);
+	moveMotor(3, speed);
+	moveMotor(4, speed);
 	osDelay(duration);
-	move_motor(1, 0);
-	move_motor(2, 0);
-	move_motor(3, 0);
-	move_motor(4, 0);
+	moveMotor(1, 0);
+	moveMotor(2, 0);
+	moveMotor(3, 0);
+	moveMotor(4, 0);
 }
 
-void move_backward(float speed, int duration) 
+void moveBackward(float speed, int duration) 
 {
-	move_motor(1, -1*speed);
-	move_motor(2, -1*speed);
-	move_motor(3, -1*speed);
-	move_motor(4, -1*speed);
+	moveMotor(1, -1*speed);
+	moveMotor(2, -1*speed);
+	moveMotor(3, -1*speed);
+	moveMotor(4, -1*speed);
 	osDelay(duration);
-	move_motor(1, 0);
-	move_motor(2, 0);
-	move_motor(3, 0);
-	move_motor(4, 0);
+	moveMotor(1, 0);
+	moveMotor(2, 0);
+	moveMotor(3, 0);
+	moveMotor(4, 0);
 }
 
-void move_left(float speed, int duration) 
+// Spot turn left
+void moveLeft(float speed, int duration) 
 {
-	move_motor(1, -1*speed);
-	move_motor(2, speed);
-	move_motor(3, -1*speed);
-	move_motor(4, speed);
+	moveMotor(1, -1*speed);
+	moveMotor(2, speed);
+	moveMotor(3, -1*speed);
+	moveMotor(4, speed);
 	osDelay(duration);
-	move_motor(1, 0);
-	move_motor(2, 0);
-	move_motor(3, 0);
-	move_motor(4, 0);
+	moveMotor(1, 0);
+	moveMotor(2, 0);
+	moveMotor(3, 0);
+	moveMotor(4, 0);
 }
 
-void move_right(float speed, int duration) 
+// Spot turn right
+void moveRight(float speed, int duration) 
 {
-	move_motor(1, speed);
-	move_motor(2, -1*speed);
-	move_motor(3, speed);
-	move_motor(4, -1*speed);
+	moveMotor(1, speed);
+	moveMotor(2, -1*speed);
+	moveMotor(3, speed);
+	moveMotor(4, -1*speed);
 	osDelay(duration);
-	move_motor(1, 0);
-	move_motor(2, 0);
-	move_motor(3, 0);
-	move_motor(4, 0);
+	moveMotor(1, 0);
+	moveMotor(2, 0);
+	moveMotor(3, 0);
+	moveMotor(4, 0);
 }
 
-void curl_right(float speed, int duration, int intensity) 
+// Arc turn right
+void curlRight(float speed, int duration, int intensity) 
 {
-	move_motor(1, speed);
-	move_motor(2, speed/intensity);
-	move_motor(3, speed);
-	move_motor(4, speed/intensity);
+	moveMotor(1, speed);
+	moveMotor(2, speed/intensity);
+	moveMotor(3, speed);
+	moveMotor(4, speed/intensity);
 	osDelay(duration);
-	move_motor(1, 0);
-	move_motor(2, 0);
-	move_motor(3, 0);
-	move_motor(4, 0);
+	moveMotor(1, 0);
+	moveMotor(2, 0);
+	moveMotor(3, 0);
+	moveMotor(4, 0);
 }
 
-void curl_left(float speed, int duration, int intensity) 
+// Arc turn left
+void curlLeft(float speed, int duration, int intensity) 
 {
-	move_motor(1, speed/intensity);
-	move_motor(2, speed);
-	move_motor(3, speed/intensity);
-	move_motor(4, speed);
+	moveMotor(1, speed/intensity);
+	moveMotor(2, speed);
+	moveMotor(3, speed/intensity);
+	moveMotor(4, speed);
 	osDelay(duration);
-	move_motor(1, 0);
-	move_motor(2, 0);
-	move_motor(3, 0);
-	move_motor(4, 0);
+	moveMotor(1, 0);
+	moveMotor(2, 0);
+	moveMotor(3, 0);
+	moveMotor(4, 0);
 }

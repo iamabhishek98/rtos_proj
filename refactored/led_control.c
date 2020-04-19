@@ -1,5 +1,6 @@
 #include "led_control.h"
 
+// Initialize LED GPIO configuration
 void initLED(void)
 {
 	/* enable clock for port C & D */ 
@@ -31,7 +32,8 @@ void initLED(void)
 	PTD->PDDR |= MASK(RED_LED);
 }
 
-void led_green_on()
+// Turn on Array of 8 LEDs
+void ledGreenOn()
 {
 	PTC->PDOR |= MASK(GREEN_LED_1);
 	PTC->PDOR |= MASK(GREEN_LED_2);
@@ -43,7 +45,8 @@ void led_green_on()
 	PTC->PDOR |= MASK(GREEN_LED_8);
 }
 
-void led_green_off()
+// Turn off Array of 8 LEDs
+void ledGreenOff()
 {
 	PTC->PDOR &= ~MASK(GREEN_LED_1);
 	PTC->PDOR &= ~MASK(GREEN_LED_2);
@@ -55,7 +58,13 @@ void led_green_off()
 	PTC->PDOR &= ~MASK(GREEN_LED_8);
 }
 
-void led_green_running(int delay)
+/* 
+	Play running sequence of Array of Green LEDs
+	while the vehicle is moving. LED sequence
+	abrubtly stops once motor stops moving 
+  (sequence doesnt complete).
+*/
+void ledGreenRunning(int delay)
 {
 	PTC->PDOR |= MASK(GREEN_LED_1);		
 	osDelay(delay);
@@ -104,12 +113,12 @@ void led_green_running(int delay)
 	PTC->PDOR &= ~MASK(GREEN_LED_8);
 }
 
-void led_red_on()
+void ledRedOn()
 {
 	PTD->PDOR |= MASK(RED_LED);		
 }
 
-void led_red_off()
+void ledRedOff()
 {
 	PTD->PDOR &= ~MASK(RED_LED);	
 }

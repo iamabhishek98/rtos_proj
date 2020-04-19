@@ -1,6 +1,7 @@
 #include "audio_control.h"
 
-void initPWM_buzzer(void)
+// Initialize PWM module of buzzer
+void initPWMBuzzer(void)
 {
  SIM_SCGC5 |= SIM_SCGC5_PORTB_MASK;
  
@@ -20,7 +21,7 @@ void initPWM_buzzer(void)
  TPM1_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 }
 
-// Set freq for the buzzer.
+// Set freq for the buzzer
 void setFrequencyBuzzer(int frequency)
 {
 	int mod = (TIMER_CLCK_FREQ / frequency) - 1;

@@ -1,9 +1,9 @@
 Dependencies for Project 'cg2271_final_refactored', Target 'Target 1': (DO NOT MODIFY !)
 CompilerVersion: 5060750::V5.06 update 6 (build 750)::ARMCC
-F (.\motor_control.h)(0x5E9B1D7E)()
-F (.\motor_control.c)(0x5E9B0A54)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\motor_control.o --omf_browse .\objects\motor_control.crf --depend .\objects\motor_control.d)
-I (motor_control.h)(0x5E9B1D7E)
-I (common.h)(0x5E9B22BF)
+F (.\motor_control.h)(0x5E9BC86D)()
+F (.\motor_control.c)(0x5E9BCBA7)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\motor_control.o --omf_browse .\objects\motor_control.crf --depend .\objects\motor_control.d)
+I (motor_control.h)(0x5E9BC86D)
+I (common.h)(0x5E9BC35B)
 I (.\RTE\_Target_1\RTE_Components.h)(0x5E9B10E5)
 I (C:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h)(0x585B7C0A)
 I (C:\ARM\ARMCC\include\stdint.h)(0x5D9AD218)
@@ -14,10 +14,10 @@ I (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cms
 I (.\RTE\Device\MKL25Z128xxx4\system_MKL25Z4.h)(0x56441C9A)
 I (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include\cmsis_os2.h)(0x5C8F1798)
 I (C:\ARM\ARMCC\include\stddef.h)(0x5D9AD218)
-I (custom_queue.h)(0x5E9B22CF)
-F (.\led_control.c)(0x5E9B1E4C)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\led_control.o --omf_browse .\objects\led_control.crf --depend .\objects\led_control.d)
-I (led_control.h)(0x5E9B22A3)
-I (common.h)(0x5E9B22BF)
+I (custom_queue.h)(0x5E9BDFD0)
+F (.\led_control.c)(0x5E9BC547)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\led_control.o --omf_browse .\objects\led_control.crf --depend .\objects\led_control.d)
+I (led_control.h)(0x5E9BC4BB)
+I (common.h)(0x5E9BC35B)
 I (.\RTE\_Target_1\RTE_Components.h)(0x5E9B10E5)
 I (C:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h)(0x585B7C0A)
 I (C:\ARM\ARMCC\include\stdint.h)(0x5D9AD218)
@@ -28,9 +28,9 @@ I (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cms
 I (.\RTE\Device\MKL25Z128xxx4\system_MKL25Z4.h)(0x56441C9A)
 I (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include\cmsis_os2.h)(0x5C8F1798)
 I (C:\ARM\ARMCC\include\stddef.h)(0x5D9AD218)
-I (custom_queue.h)(0x5E9B22CF)
-F (.\led_control.h)(0x5E9B22A3)()
-F (.\main.c)(0x5E9B22E0)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+I (custom_queue.h)(0x5E9BDFD0)
+F (.\led_control.h)(0x5E9BC4BB)()
+F (.\main.c)(0x5E9BE0DA)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (.\RTE\_Target_1\RTE_Components.h)(0x5E9B10E5)
 I (C:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h)(0x585B7C0A)
 I (C:\ARM\ARMCC\include\stdint.h)(0x5D9AD218)
@@ -41,17 +41,17 @@ I (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cms
 I (.\RTE\Device\MKL25Z128xxx4\system_MKL25Z4.h)(0x56441C9A)
 I (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include\cmsis_os2.h)(0x5C8F1798)
 I (C:\ARM\ARMCC\include\stddef.h)(0x5D9AD218)
-I (common.h)(0x5E9B22BF)
-I (custom_queue.h)(0x5E9B22CF)
-I (songs.h)(0x5E9B1E89)
-I (motor_control.h)(0x5E9B1D7E)
-I (led_control.h)(0x5E9B22A3)
-I (audio_control.h)(0x5E9B1EA5)
-I (uart_control.h)(0x5E9B1DC7)
-F (.\common.h)(0x5E9B22BF)()
-F (.\audio_control.c)(0x5E9B1E57)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\audio_control.o --omf_browse .\objects\audio_control.crf --depend .\objects\audio_control.d)
-I (audio_control.h)(0x5E9B1EA5)
-I (common.h)(0x5E9B22BF)
+I (common.h)(0x5E9BC35B)
+I (custom_queue.h)(0x5E9BDFD0)
+I (songs.h)(0x5E9BC2FB)
+I (motor_control.h)(0x5E9BC86D)
+I (led_control.h)(0x5E9BC4BB)
+I (audio_control.h)(0x5E9BC3D8)
+I (uart_control.h)(0x5E9BC003)
+F (.\common.h)(0x5E9BC35B)()
+F (.\audio_control.c)(0x5E9BC40E)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\audio_control.o --omf_browse .\objects\audio_control.crf --depend .\objects\audio_control.d)
+I (audio_control.h)(0x5E9BC3D8)
+I (common.h)(0x5E9BC35B)
 I (.\RTE\_Target_1\RTE_Components.h)(0x5E9B10E5)
 I (C:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h)(0x585B7C0A)
 I (C:\ARM\ARMCC\include\stdint.h)(0x5D9AD218)
@@ -62,13 +62,13 @@ I (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cms
 I (.\RTE\Device\MKL25Z128xxx4\system_MKL25Z4.h)(0x56441C9A)
 I (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include\cmsis_os2.h)(0x5C8F1798)
 I (C:\ARM\ARMCC\include\stddef.h)(0x5D9AD218)
-I (custom_queue.h)(0x5E9B22CF)
-F (.\audio_control.h)(0x5E9B1EA5)()
-F (.\songs.h)(0x5E9B1E89)()
-F (.\uart_control.h)(0x5E9B1DC7)()
-F (.\uart_control.c)(0x5E9B1DDC)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\uart_control.o --omf_browse .\objects\uart_control.crf --depend .\objects\uart_control.d)
-I (uart_control.h)(0x5E9B1DC7)
-I (common.h)(0x5E9B22BF)
+I (custom_queue.h)(0x5E9BDFD0)
+F (.\audio_control.h)(0x5E9BC3D8)()
+F (.\songs.h)(0x5E9BC2FB)()
+F (.\uart_control.h)(0x5E9BC003)()
+F (.\uart_control.c)(0x5E9BC084)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\uart_control.o --omf_browse .\objects\uart_control.crf --depend .\objects\uart_control.d)
+I (uart_control.h)(0x5E9BC003)
+I (common.h)(0x5E9BC35B)
 I (.\RTE\_Target_1\RTE_Components.h)(0x5E9B10E5)
 I (C:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include\MKL25Z4.h)(0x585B7C0A)
 I (C:\ARM\ARMCC\include\stdint.h)(0x5D9AD218)
@@ -79,10 +79,10 @@ I (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cms
 I (.\RTE\Device\MKL25Z128xxx4\system_MKL25Z4.h)(0x56441C9A)
 I (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include\cmsis_os2.h)(0x5C8F1798)
 I (C:\ARM\ARMCC\include\stddef.h)(0x5D9AD218)
-I (custom_queue.h)(0x5E9B22CF)
-F (.\custom_queue.h)(0x5E9B22CF)()
-F (.\custom_queue.c)(0x5E9B1DF4)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\custom_queue.o --omf_browse .\objects\custom_queue.crf --depend .\objects\custom_queue.d)
-I (custom_queue.h)(0x5E9B22CF)
+I (custom_queue.h)(0x5E9BDFD0)
+F (.\custom_queue.h)(0x5E9BDFD0)()
+F (.\custom_queue.c)(0x5E9BBFCA)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\custom_queue.o --omf_browse .\objects\custom_queue.crf --depend .\objects\custom_queue.d)
+I (custom_queue.h)(0x5E9BDFD0)
 F (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Library\ARM\RTX_CM0.lib)(0x5D2590B8)()
 F (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Source\rtx_lib.c)(0x5D2590B8)(--c99 --gnu -c --cpu Cortex-M0+ -D__RTX -D__EVAL -g -O0 --apcs=interwork --split_sections-I.\RTE\CMSIS-I.\RTE\Device\MKL25Z128xxx4-I.\RTE\_Target_1-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\RTOS2\RTX\Include-IC:\Users\hashi\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include-D__UVISION_VERSION="529" -D_RTE_ -DMKL25Z128xxx4-o .\objects\rtx_lib.o --omf_browse .\objects\rtx_lib.crf --depend .\objects\rtx_lib.d)
 I (C:\Users\hashi\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include\cmsis_compiler.h)(0x5D2590B6)

@@ -1,6 +1,6 @@
 #include "uart_control.h"
 
-// Initialize UART Module
+// Initialize UART Module with baud rate
 void initUART2(uint32_t baud_rate)
 {
 	uint32_t divisor, bus_clock;
@@ -30,14 +30,18 @@ void initUART2(uint32_t baud_rate)
 	Q_Init(&RxQ);
 }
 
+// Interupt handler for UART2. Enqueues new data into custom_queue
 void UART2_IRQHandler(void)
 {
-    if (UART2->S1 & UART_S1_RDRF_MASK) {
+    if (UART2->S1 & UART_S1_RDRF_MASK)
+		{
         // received a character
-        if (!Q_Full(&RxQ)) {
-        Q_Enqueue(&RxQ, UART2->D);
-        } else {
-        // error -queue full.
+        if (!Q_Full(&RxQ))
+				{
+					Q_Enqueue(&RxQ, UART2->D);
+        } else
+				{
+					// error -queue full.
         }
     }
 }

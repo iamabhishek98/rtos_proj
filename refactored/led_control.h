@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+// LED pin definitions for FRDM board
 #define GREEN_LED_1 7
 #define GREEN_LED_2 0 
 #define GREEN_LED_3 3
@@ -13,13 +14,14 @@
 #define GREEN_LED_8 11
 #define RED_LED 6
 
+// global variable that is used in the main program as well
 extern volatile int isMotorMoving;
 
 void initLED(void);
-void led_green_on(void);
-void led_green_off(void);
-void led_green_running(int delay);
-void led_red_on(void);
-void led_red_off(void);
+void ledGreenOn(void);
+void ledGreenOff(void);
+void ledGreenRunning(int delay);
+void ledRedOn(void);
+void ledRedOff(void);
 
 #endif /* LED_CONTROL_H_ */

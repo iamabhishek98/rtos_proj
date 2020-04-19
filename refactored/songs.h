@@ -1,10 +1,24 @@
 #ifndef SONGS_H_
 #define SONGS_H_
 
-float songspeed = 2; //Change to 2 for a slower version of the song, the bigger the number the slower the song
+/*
+	Header file that stores all the song related constants 
+	such as notes and duration between notes for the song 
+	requirments of the 3 different tunes in CG2271 project.
+*/
+
+// Remap existing notes to higher frequencies that can be played by our buzzer
+#define del_song 5 
+
+float songspeed = 2; // the bigger the number the slower the song
+
+
+/*
+Credit for the song info: 
+https://github.com/robsoncouto/arduino-songs/tree/master/supermariobros
+*/
 
 //*****************************************
-#define del_song 5
 #define NOTE_B0  31 * del_song
 #define NOTE_C1  33 * del_song
 #define NOTE_CS1 35 * del_song
@@ -95,6 +109,7 @@ float songspeed = 2; //Change to 2 for a slower version of the song, the bigger 
 #define NOTE_D8  4699 * del_song
 #define NOTE_DS8 4978 * del_song
 
+// Song played while vehicle is moving. Mario Underworld Tune.
 int running_melody[] = {
   NOTE_C4, NOTE_C5, NOTE_A3, NOTE_A4,
   NOTE_AS3, NOTE_AS4, 0,
@@ -117,6 +132,8 @@ int running_melody[] = {
   0, 0, 0
 };
 
+
+// Song played at end of run. Pirates of the carribean theme song.
 int end_melody[] = {       //Note of the song, 0 is a rest/pulse
    NOTE_E4, NOTE_G4, NOTE_A4, NOTE_A4, 0, 
    NOTE_A4, NOTE_B4, NOTE_C5, NOTE_C5, 0, 

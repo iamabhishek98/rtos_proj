@@ -3,7 +3,13 @@
 
 #define Q_SIZE (32)
 
-typedef struct{
+/*
+	Custom Queue Data Structure to handle 
+	serial data from bluetooth.
+*/
+
+typedef struct
+{
 	unsigned char Data[Q_SIZE];
 	unsigned int Head; // points to oldest data element
 	unsigned int Tail; // points to next free space

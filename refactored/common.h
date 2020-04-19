@@ -7,6 +7,11 @@
 #include "MKL25Z4.h"
 #include "custom_queue.h"
 
+/*
+	Common Helper interface.
+	Common constants and modules included by most other header files.
+*/
+
 #define TIMER_CLCK_FREQ 375000
 #define MASK(x) (1 << (x)) 
 #define del_global 0x40000

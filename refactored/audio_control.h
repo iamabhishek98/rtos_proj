@@ -3,9 +3,14 @@
 
 #include "common.h"
 
+/*
+	Module in charge of audio control / buzzer control.
+	Used to control frequencies and play songs.
+*/
+
 #define BUZZER 0
 
-void initPWM_buzzer(void);
+void initPWMBuzzer(void);
 void setFrequencyBuzzer(int frequency);
 
 #endif /* AUDIO_CONTROL_H_ */

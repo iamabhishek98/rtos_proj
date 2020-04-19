@@ -3,6 +3,10 @@
 
 #include "common.h"
 
+/*
+	Module that helps with the Bluetooth UART setup and handling.
+*/
+
 #define FREQ 50
 #define BAUD_RATE 9600
 #define UART_TX_PORTE22 22
