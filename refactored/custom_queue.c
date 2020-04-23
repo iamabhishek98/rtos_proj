@@ -1,7 +1,7 @@
 #include "custom_queue.h"
 
 // Initialize the Queue
-void Q_Init(Q_T * q)
+void Q_Init(volatile Q_T * q)
 {
 	unsigned int i;
 	for (i=0; i<Q_SIZE; i++)
@@ -11,19 +11,19 @@ void Q_Init(Q_T * q)
 	q->Size = 0;
 }
  
-int Q_Empty(Q_T * q)
+int Q_Empty(volatile Q_T * q)
 {
 	return q->Size == 0;
 }
 
-int Q_Full(Q_T * q)
+int Q_Full(volatile Q_T * q)
 {
 	return q->Size == Q_SIZE;
 }
  
 // Enqueue new data into the queue, 
 // returning false if queue is full
-int Q_Enqueue(Q_T * q, unsigned char d)
+int Q_Enqueue(volatile Q_T * q, unsigned char d)
 {
 	if (!Q_Full(q)) {
 			q->Data[q->Tail++] = d;
@@ -36,7 +36,7 @@ int Q_Enqueue(Q_T * q, unsigned char d)
 
 // Get the oldest data (FIFO) to dequeue if
 // the queue is non-empty
-unsigned char Q_Dequeue(Q_T * q)
+unsigned char Q_Dequeue(volatile Q_T * q)
 {
     // Must check to see if queue is empty before dequeueing
     unsigned char t=0;
