@@ -1,14 +1,14 @@
-RTOS Architecture Report :
+# RTOS Architecture Report :
 
-**<span style="text-decoration:underline;">Introduction:</span>**
+## Introduction
 
 This report is to detail the RTOS Architecture and Global Variables used in our Mini-Project in order to fulfill the requirements. The report aims to explain the source code with respect to the threads as well as the global variables used. 
 
-**<span style="text-decoration:underline;">Overview of Architecture :</span>**
+## Overview of Architecture
 
 In our implementation of the code, we use the idea of message passing as the communication model between threads. We then use the tBrain thread as the receiver of the data packet incoming from the app received in the Serial_ISR. The app sends different numbers  From the tBrain, the message is passed to the tMotorControl. This thread controls the movement and passes the message further to the audio and LED threads which only change state while moving. The buttons on the application transmit different numbers which correspond to different states as given the image to the right. Some states are defined in-code to further encapsulate which states the robot can be in.
 
-**<span style="text-decoration:underline;">Section 1 : Global Variables :</span>**
+## Section 1 : Global Variables
 
 Here we have used 3 global variables in order to track the status of the motors, the audio as well as the position of the robot in the maze. These are called isMotorMoving, isFinished and musicCount. 
 
@@ -28,7 +28,7 @@ This variable is used to ensure that the running theme song runs 4 notes at a ti
 
 This variable is used by the tAudio Thread in order to slow down the song as the original duration results in a sped up song.
 
-**<span style="text-decoration:underline;">Section 2 RTOS Architecture:</span>**
+## Section 2 : RTOS Architecture:
 
 As mentioned previously we have used message queues for inter task communication. Given below is the definition of the queue Q_T which stores the received message from the app and myDataPacket which holds the message from the tBrain to other tasks in the message queue. 
 
@@ -36,8 +36,8 @@ As mentioned previously we have used message queues for inter task communication
 
 The main function first calls all of the initialise functions which are not included in this report as they are simply configuration related. Then after the Kernel is initialised, the 5 threads are created at the same priority and the message queue is created to be used for each thread.
 
-** \
- Serial_ISR :**
+
+**Serial_ISR :**
 
 The serial ISR has been initialised to receive data from the bluetooth device. After the button is pressed on the application, the UART Handler the queue is then enqued with the data from the application.
 
