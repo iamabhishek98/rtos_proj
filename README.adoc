@@ -1,0 +1,62 @@
+RTOS Architecture Report :
+
+**<span style="text-decoration:underline;">Introduction:</span>**
+
+This report is to detail the RTOS Architecture and Global Variables used in our Mini-Project in order to fulfill the requirements. The report aims to explain the source code with respect to the threads as well as the global variables used. 
+
+**<span style="text-decoration:underline;">Overview of Architecture :</span>**
+
+In our implementation of the code, we use the idea of message passing as the communication model between threads. We then use the tBrain thread as the receiver of the data packet incoming from the app received in the Serial_ISR. The app sends different numbers  From the tBrain, the message is passed to the tMotorControl. This thread controls the movement and passes the message further to the audio and LED threads which only change state while moving. The buttons on the application transmit different numbers which correspond to different states as given the image to the right. Some states are defined in-code to further encapsulate which states the robot can be in.
+
+**<span style="text-decoration:underline;">Section 1 : Global Variables :</span>**
+
+Here we have used 3 global variables in order to track the status of the motors, the audio as well as the position of the robot in the maze. These are called isMotorMoving, isFinished and musicCount. 
+
+**isMotorMoving :**
+
+This variable is effectively a global flag variable which allows us to ascertain if the motors are moving. It is updated in the  tMotorControl and is used to control when the red and green leds change their state from running to stationary. This was done so that the variable can be used as a condition to terminate the running state of the LED’s immediately.
+
+**isFinished :**
+
+This variable is a flag to indicate when the robot is running and when the maze has been completed. This is in order to suspend any other commands reaching the robot after the finished button on the application has been pressed.
+
+**musicCount :**
+
+This variable is used to ensure that the running theme song runs 4 notes at a time before the code context switches out of the thread. This ensures that 
+
+**songspeed :**
+
+This variable is used by the tAudio Thread in order to slow down the song as the original duration results in a sped up song.
+
+**<span style="text-decoration:underline;">Section 2 RTOS Architecture:</span>**
+
+As mentioned previously we have used message queues for inter task communication. Given below is the definition of the queue Q_T which stores the received message from the app and myDataPacket which holds the message from the tBrain to other tasks in the message queue. 
+
+**Main Function:**
+
+The main function first calls all of the initialise functions which are not included in this report as they are simply configuration related. Then after the Kernel is initialised, the 5 threads are created at the same priority and the message queue is created to be used for each thread.
+
+** \
+ Serial_ISR :**
+
+The serial ISR has been initialised to receive data from the bluetooth device. After the button is pressed on the application, the UART Handler the queue is then enqued with the data from the application.
+
+**tBrain Thread :**
+
+The tBrain thread is the first to activate and the robot begins the start state 0x09. This is the state which persists until a message is sent from the application. Once a message is sent it is then dequeued from the queue and the same number (which indicates the state) is sent through the message queue to the audio and motor threads first. If there is no button pressed then the state defaults to 0x08 and the “wait” state message is sent. The sending of messages does not end  and hence, the architecture is based on different states. The osDelay at the end of the thread ensures that all the threads have finished execution before the next state message is sent. 
+
+**tMotorControl Thread:**
+
+The motor thread receives the message from the tBrain. After this we send out the redMsg and greenMsg. We do this since the operation of the red and green LED’s depends on the global “isMotorMoving” flag which is changed within the tMotorControl thread. After this, the state which was received dictates which of the predefined helper functions ex. Move_forward, move_left etc. are executed. Here, we update the global flag isMotorMoving as mentioned if the robot is in a moving state. If the state is one where the robot is not moving then a move_forward with 0 duty cycle is given. We add a delay after the movement function is called (osDelay(30)) in order to context switch and allow the red and green LED threads to receive the messages which were sent earlier to execute before resetting the value of the flag isMotorMoving to 0. This allows the red and green LED’s to change their patterns according to the motion of the robot. 
+
+**tLED Threads:**
+
+The LED threads given above receive the messages from the tMotorControl once given a chance to run. 
+
+Green LED Thread: In this thread we use 3 helper functions :led_green_on, led_green_off and led_green_running. The on and off functions switch all 8 leds on or off while the running function switches them on one at a time. For the start state (0x09) we have all the LED’s off as the robot is disconnected from the led. Once the connection state (0x00) is given, the Green LED’s blink twice as per the project's requirements. If the wait state (0x08) is active then all the green leds are on. If the robot is moving for any moving state, then the running function is activated only if the robot is moving checking the isMotorMoving flag.
+
+Red Led Thread : The red thread is similar to the green. In Connection or start state the LEDs are off. If the robot is waiting ( 0x07 or 0x08) then, the LED’s blink faster at a rate of 250ms while if the robot is in a moving state the LEDs blink slower at a rate of 500ms. 
+
+**tAudio Thread:**
+
+The tAudio receives its message from the tBrain and then runs which song or tone is to be played depending on which state the robot is in. We use a local variable isBluetoothConnect with 3 different values. 0 means the bluetooth is not connected, 1 meaning bluetooth connection is established and 2 meaning that the finished command has been pressed. If the connection state (0x00) occurs then a unique sound is played ( we have simply taken a part of the finishing song) and then isBluetoothConnect becomes 1. Then as long as the finish button is not pressed, the running mario theme is played. We play the song through code by defining the various notes by their frequency and then putting the notes of the song in an array. We also made a duration array to specify how long the note is played for. Then in the audio thread, loop through these arrays in order to play the tune. Here we use the variable musicCount to allow the song to resume from the same point after context switches to other threads. Once the finished state (0x07) is reached then we can update isBluetoothConnect and proceed to the end melody. 
